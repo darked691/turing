@@ -102,7 +102,7 @@ void init_NT(T_machine T){
 	int i=0;
 	char c = '\0';
 	int k=0;
-	int nb_ligne=0; 
+	int nb_ligne=1; 
 	char entre[60];
     if (fichier != NULL)
     {
@@ -121,10 +121,10 @@ void init_NT(T_machine T){
 	while(c!=EOF)
 	{
 		c=fgetc(fichier);
-		if(c=='\n')
+		if(c=='/')
 		nb_ligne++;
 	}
-	NT=nb_ligne;
+	NT=nb_ligne/2;
     fclose(fichier);
 	}
 }
@@ -319,15 +319,20 @@ int verifier_format_etat_alphabet()
 			
 			c= fgetc(fichier);
 			
+			printf("j3 %d \n",j3);
 			//if(c==' ' && count==3 ) {printf("erreur format symbole vide");exit(0);}
+			
+			 if (c=='\n')j3++;
 			
 			if(c!=' ' || c!='\n'){count++; printf("%c ----->",c); printf("%d \n",count);}
 			
 			else if((count%20==2 || count%20==6 || count%20==8 || count%20 == 10 || count%20==14 || count%20==18) && c!='|'){ printf("erreur format"); }
 			
 			else if((count%20==1 || count%20==19) && c=='/') nombre_bars_vertical++;
-
+			
 			else if(c==EOF && nombre_bars_vertical!=2*NT) printf("erreur format bars /");
+			
+			
 			
 					if(c==' ')
 					{
@@ -335,7 +340,9 @@ int verifier_format_etat_alphabet()
 						 exit(0);
 				    }	
          }
+         
 }
+
 	 
 fclose(fichier);
 
@@ -730,12 +737,15 @@ void quickSort(int *tableau, int p, int r) {
 }
 Info_machine allocation(Info_machine I,T_machine T)	
 {	int i=0;
+	int y=0;
 	//~ int ite=0;
 	//~ for(ite=0;T.table_transition[0].symbole_actuel[ite]!='\0';ite++) {}
 	
 	//~ printf("ite %d\n",ite);
 	I.transition=malloc(sizeof(Transition)*NT+1);
-
+	T.table_transition[NT+1].symbole_actuel=NULL;
+	while(T.table_transition[y].symbole_actuel!=NULL) y++;
+	printf("y %d \n",y);
 		while(i!=NT-1)
 		{
 			I.transition[i].direction=malloc(sizeof(char)*NR);
@@ -852,7 +862,65 @@ free(T.table_transition->symbole_actuel);
 free(T.table_transition->symbole_suivant);
 free(T.table_transition);
 free(T.alpabet);
-}	
+}
+FILE** creation_log_latex()
+{
+	FILE** fichier;
+	fichier=malloc(sizeof(FILE)*3);
+	fichier[0]=fopen("log.tex","w");
+	fputc(92,fichier[0]);
+fputs("documentclass{article}",fichier[0]);
+fputc(10,fichier[0]);
+fputc(92,fichier[0]);
+fputs("begin{document}",fichier[0]);
+fputc(10,fichier[0]);
+fputc(92,fichier[0]);
+fputs("subsection{Log}",fichier[0]);
+fputc(10,fichier[0]);
+fputc(92,fichier[0]);
+fputs("begin{verbatim}",fichier[0]);
+fputc(10,fichier[0]);
+fputs("Transition effectue:",fichier[0]);
+fichier[1]=fopen("log.fig","w");
+fputs("#FIG 3.2  Produced by xfig version 3.2.7\n",fichier[1]);
+fputs("Landscape\n",fichier[1]);
+fputs("Center\n",fichier[1]);
+fputs("Metric\n",fichier[1]);
+fputs("A4\n",fichier[1]);
+fputs("100.00\n",fichier[1]);
+fputs("Single\n",fichier[1]);
+fputs("-2\n",fichier[1]);
+fputs("1200 2\n",fichier[1]);
+fputs("4 0 0 50 -1 0 12 0.0000 4 135 420 2475 900 ",fichier[1]);
+fputs("Transition effectue",fichier[1]);
+fputc(92,fichier[1]);
+fputs("001\n",fichier[1]);
+return fichier;
+}		
+void ecrire_log(T_machine T,FILE* fichier1,FILE* fichier2,int *position_texte)
+{
+fputc(10,fichier1);
+fputs("Etat : ",fichier1);
+fprintf(fichier1,"%d",T.table_transition[2].etat_actuel);
+fputc(10,fichier1);
+fputs("4 0 0 50 -1 0 16 0.0000 4 135 420 2475",fichier2);
+position_texte[0]=position_texte[0]+290;
+fprintf(fichier2," %d ",position_texte[0]);
+fputs("etat ",fichier2);
+fprintf(fichier2,"%d",T.table_transition[2].etat_actuel);
+fputc(92,fichier2);
+fputs("001\n",fichier2);
+}
+void fermeture_log(FILE* fichier1,FILE* fichier2)
+{
+fputc(92,fichier1);
+fputs("end{verbatim}",fichier1);
+fputc(10,fichier1);
+fputc(92,fichier1);
+fputs("end{document}",fichier1);
+fclose(fichier1);
+fclose(fichier2);
+}
 int main(){
 int check_etat_alphabet=0;
 int check_format=0;
@@ -871,6 +939,16 @@ check_format=verifier_format_transition_ruban_1();
 T=fill_alphabet(T);
  T=fill_transition(T);
  I=allocation(I,T);
+ int position_texte[0];
+ position_texte[0]=900;
+ FILE** fichier;
+fichier=creation_log_latex();
+ecrire_log(T,fichier[0],fichier[1],position_texte);
+ecrire_log(T,fichier[0],fichier[1],position_texte);
+ecrire_log(T,fichier[0],fichier[1],position_texte);
+fermeture_log(fichier[0],fichier[1]);
+ //~ printf("check_etat_alphabet %d\n",check_etat_alphabet);
+ //~ printf("check_format %d\n",check_format);
 //~ T=fill_matrice_t(T);
 int i=0;
 //~ for(i=0;i<NT;i++)
