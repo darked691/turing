@@ -183,7 +183,7 @@ int verifier_transition_non_vide()
 	
 	if(c=='\n' || c==' '){printf("erreur format symbole vide");return 0;}
 	
-	return 1;
+return 1;
 }
 }
 void init_NR(T_machine T){
