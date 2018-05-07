@@ -51,7 +51,6 @@ void init_NC_()
     fichier = fopen("fichier", "r");
 	int i=0;
 	char c = '\0'; 
-	char entre[60];
     if (fichier != NULL)
     {
         do
@@ -73,7 +72,6 @@ void init_NE()
     fichier = fopen("fichier", "r");
 	int i=0;
 	char c = '\0'; 
-	char entre[60];
 	NE=0;
     if (fichier != NULL)
     {
@@ -96,91 +94,159 @@ void init_NE()
 	}		
 }	
 void init_NT(T_machine T){
-	char symbole_actuel[3];
+
 	FILE* fichier = NULL;
     fichier = fopen("fichier", "r");
 	int i=0;
 	char c = '\0';
-	int k=0;
-	int nb_ligne=1; 
-	char entre[60];
+	int nb_ligne=0; 
     if (fichier != NULL)
     {
 		
         do
          { 
 			 
-            c= fgetc(fichier); // On lit le caractère
+            c= fgetc(fichier); 
 
-    }while (c != '/'); // On continue tant que fgetc n'a pas retourné EOF (fin de fichier)
+    }while (c != '/'); 
 	
 	c= fgetc(fichier);
 	
 	c= fgetc(fichier);
+
+	int verifie_ligne_vide=0;
 
 	while(c!=EOF)
 	{
 		c=fgetc(fichier);
-		if(c=='/')
+		if(c=='\n')
 		nb_ligne++;
+		
+		//~ if(verifie_ligne_vide==1 && c!='/')
+		//~ {
+			 //~ printf("erreur format : symbole_vide\n");
+			 //~ nb_ligne--;
+			 //~ break;
+		//~ }
+		//~ if(c=='\n') verifie_ligne_vide++;
+		//~ else
+		//~ verifie_ligne_vide=0;
 	}
-	NT=nb_ligne/2;
+	NT=nb_ligne;
     fclose(fichier);
 	}
 }
-void init_NR(T_machine T){
-	
-	char symbole_actuel[3];
-	
+int verifier_transition_non_vide()
+{
+		
 	FILE* fic = NULL;
 	
     fic = fopen("fichier", "r");
     
+    char symbole_actuel[3];
+    
 	int i=0;
 	
-	char c = '\0'; //log1.1 : char c = "" changé en char c = ' ' car le symbole " est utilisé pour les chaines de caractères.
-	char entre[60];
+	char c = '\0';
+
     if (fic != NULL)
     {
 		
 			do
 			{ 			
 			 			
-            c= fgetc(fic); // On lit le caractère
+            c= fgetc(fic); 
 
-        }while (c != '\n'); // On continue tant que fgetc n'a pas retourné EOF (fin de fichier)
+        }while (c != '\n'); 
 			do
 			{ 
-				c= fgetc(fic); // On lit le caractère
+				c= fgetc(fic); 
 				
         }while (c != '\n'); 
             do
 			{ 
 			 
 			
-            c= fgetc(fic); // On lit le caractère
+            c= fgetc(fic);
 
         }while (c != '\n'); 
+        
 	c= fgetc(fic);
+	
+	if(c!='/' ) {printf("erreur format symbole vide il manque '\'");return 0;}
+	
 	c= fgetc(fic);
-	c= fgetc(fic);//printf("%c touy\n",c);
-	if(c=='\n' || c==' '){printf("erreur format symbole vide");exit(0);}
+	
+	if(c!='|' ) {printf("erreur format symbole vide il manque '|'");return 0;}
+	
+	c= fgetc(fic);
+	
+	if(c=='\n' || c==' '){printf("erreur format symbole vide");return 0;}
+	
+	return 1;
+}
+}
+void init_NR(T_machine T){
+	
+	
+	FILE* fic = NULL;
+	
+    fic = fopen("fichier", "r");
+    
+    char symbole_actuel[3];
+    
+	int i=0;
+	
+	char c = '\0';
+
+    if (fic != NULL)
+    {
+		
+			do
+			{ 			
+			 			
+            c= fgetc(fic); 
+
+        }while (c != '\n'); 
+			do
+			{ 
+				c= fgetc(fic); 
+				
+        }while (c != '\n'); 
+            do
+			{ 
+			 
+			
+            c= fgetc(fic);
+
+        }while (c != '\n'); 
+        
+	c= fgetc(fic);
+	
+
+	
+	c= fgetc(fic);
+	
+	
+	c= fgetc(fic);
+
 
 	int k=0;
-
+	
 	while(c!='|' || c!=EOF)
 	{
-		if(c==' '){printf("erreur format symbole vide");exit(0);}
+		if(c==' '){printf("erreur format symbole vide ");exit(0);}
 		symbole_actuel[k]=c;
 		c=fgetc(fic);
 		k++;
 		if(c=='|' ) break;
-		
+
+			 
 	}	
-	if(k>3) printf("erreur format NR");
+	if(k>3) printf("erreur format Nombre de Ruban elevée");
 	NR=k;
 
-        fclose(fic);
+        fclose(fic); 
 	}
 }
 int verifier_format_etat_alphabet()
@@ -188,26 +254,27 @@ int verifier_format_etat_alphabet()
 	FILE* fichier=NULL;
     fichier = fopen("fichier", "r");
 	int i=0;
-	char c = '\0'; //log1.1 : char c = "" changé en char c = ' ' car le symbole " est utilisé pour les chaines de caractères.
+	char c = '\0'; 
 	int parenthese=0;
-	int j=0;
+	int nombre=0;
 
         do
          { 
 			 
-            c= fgetc(fichier); // On lit le caractère
+            c= fgetc(fichier); 
             
             if(c=='[') {parenthese++; c= fgetc(fichier); }
             if(c==']') {parenthese++; break;}
             
-            j++;
+            nombre++;
             
-            j=j%2;
+            nombre=nombre%2;
             
-            if(j==1 ){if(c<47 || c>57) {return 0; break;}}
-            if(j==0 ) {if(c!=','){return 0; break;}}
+            //si l'état n'est pas un nombre on retourne 0
+            if(nombre==1 ){if(c<47 || c>57) {return 0; }}
+            if(nombre==0 ) {if(c!=','){return 0;}}
 				
-         }while (c != ']'); // On continue tant que fgetc n'a pas retourné EOF (fin de fichier)
+         }while (c != ']'); 
 			
 			if(parenthese!=2) {return 0; }
 			
@@ -217,23 +284,23 @@ int verifier_format_etat_alphabet()
 			
 			parenthese=0;
 			
-			j=0;
+			nombre=0;
 			
 		 do
          { 
 			 
 			
-            c= fgetc(fichier); // On lit le caractère
+            c= fgetc(fichier); 
            
             if(c=='[') {parenthese++; c= fgetc(fichier); }
             
             if(c==']') {parenthese++; break;}
             
-            j++;
+            nombre++;
             
-           j=j%2;
+           nombre=nombre%2;
 
-            if(j==0 ) {if(c!=','){ return 0;}}
+            if(nombre==0 ) {if(c!=','){ return 0;}}
 				
          }while (c != ']');
          
@@ -251,7 +318,7 @@ int verifier_format_etat_alphabet()
 	int j=0;
 	int nombre_bars=0;
 	int nombre_bars_vertical=0;
-	int count=2;
+	int position_caractere=2;
     if (fichier != NULL)
     {
 		while(c!='\n' ){ c= fgetc(fichier);}c= fgetc(fichier);
@@ -274,22 +341,20 @@ int verifier_format_etat_alphabet()
 
 			c= fgetc(fichier);
 			
-			if(c!=' ' || c!='\n'){count++; }
+			if(c!=' ' || c!='\n'){position_caractere++; }
 			
-			if((count%14==2 || count%14==4 || count%14==6 || count%14 == 8 || count%14==10 || count%14==12) && c!='|')
-			{ printf("erreur format |"); }
+			//%14 car une ligne comporte 14 caractere
+			if((position_caractere%14==2 || position_caractere%14==4 || position_caractere%14==6 || position_caractere%14 == 8 || position_caractere%14==10 || position_caractere%14==12) && c!='|')
+			{ printf("erreur format le  caractere '|' n'est pas à la bonne place"); }
 			
-			if((count%14==1 || count%14==13) && c=='/') nombre_bars_vertical++;
+			if((position_caractere%14==1 || position_caractere%14==13) && c=='/') nombre_bars_vertical++;
 					  
-			if(c==EOF && nombre_bars_vertical!=2*NT) printf("erreur format bars /");
+			if(c==EOF && nombre_bars_vertical!=2*NT) printf("erreur format le caractere '/' n'est pas à la bonne place");
 			
 			if(c==' ') printf("erreur format espace");
 			
-			//if( c==EOF || c==' ' ||c== '\n') {printf("erreur format symbole vide");exit(0);}
          }
 	 
-         int j2=0;
-         j=0;
          
           // On continue tant que fgetc n'a pas retourné EOF (fin de fichier)
          while(c!=EOF && NR==2)
@@ -297,13 +362,13 @@ int verifier_format_etat_alphabet()
 
 			c= fgetc(fichier);
 			
-			if(c!=' ' || c!='\n'){count++; printf("%c ----->",c); printf("%d \n",count);}
+			if(c!=' ' || c!='\n'){position_caractere++; printf("%c ----->",c); printf("%d \n",position_caractere);}
 			
-			if((count%17==2 || count%17==5 || count%17==7 || count%17 == 9 || count%17==12 || count%17==15) && c!='|'){ printf("erreur format"); }
+			if((position_caractere%17==2 || position_caractere%17==5 || position_caractere%17==7 || position_caractere%17 == 9 || position_caractere%17==12 || position_caractere%17==15) && c!='|'){ printf("erreur format le caractere '|' n'est pas à la bonne place "); }
 			
-			if((count%17==1 || count%17==16) && c=='/') nombre_bars_vertical++;
+			if((position_caractere%17==1 || position_caractere%17==16) && c=='/') nombre_bars_vertical++;
 					  
-			if(c==EOF && nombre_bars_vertical!=2*NT) printf("erreur format bars /");
+			if(c==EOF && nombre_bars_vertical!=2*NT) printf("erreur format le nombre de '|' et/ou '/' n est pas correcte");
 			
 			if(c==' ') printf("erreur format espace");
 					
@@ -324,11 +389,11 @@ int verifier_format_etat_alphabet()
 			
 			 if (c=='\n')j3++;
 			
-			if(c!=' ' || c!='\n'){count++; printf("%c ----->",c); printf("%d \n",count);}
+			if(c!=' ' || c!='\n'){position_caractere++; printf("%c ----->",c); printf("%d \n",position_caractere);}
 			
-			else if((count%20==2 || count%20==6 || count%20==8 || count%20 == 10 || count%20==14 || count%20==18) && c!='|'){ printf("erreur format"); }
+			else if((position_caractere%20==2 || position_caractere%20==6 || position_caractere%20==8 || position_caractere%20 == 10 || position_caractere%20==14 || position_caractere%20==18) && c!='|'){ printf("erreur format"); }
 			
-			else if((count%20==1 || count%20==19) && c=='/') nombre_bars_vertical++;
+			else if((position_caractere%20==1 || position_caractere%20==19) && c=='/') nombre_bars_vertical++;
 			
 			else if(c==EOF && nombre_bars_vertical!=2*NT) printf("erreur format bars /");
 			
@@ -946,11 +1011,14 @@ int check_format=0;
 T_machine T;
 Info_machine I;
 
-
+if(verifier_transition_non_vide()==1)
+{
 init_NR(T);
+
 init_NC_();
  init_NT(T);
 init_NE();
+}
 //printf("%dNE \n",NE);
 check_etat_alphabet=verifier_format_etat_alphabet();
 check_format=verifier_format_transition_ruban();
@@ -965,14 +1033,13 @@ T=fill_alphabet(T);
  position_texte_et_nombre_page[2]=1;
  FILE** fichier;
  fichier=creation_log_latex();
-//~ while(a!=200) 
-//~ {
-//~ ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte_et_nombre_page);
-//~ a++;
-//~ }
-//~ ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte);
-//~ ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte);
-//~ fermeture_log(fichier[0],fichier[1],fichier[2]);
+while(a!=200) 
+{
+ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte_et_nombre_page);
+a++;
+}
+
+fermeture_log(fichier[0],fichier[1],fichier[2]);
  //free(I.transition);
  //free(I.transition->symbole_suivant);				
 //~ free(I.transition->symbole_actuel);				
