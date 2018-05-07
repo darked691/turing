@@ -1,6 +1,7 @@
 # turing
 exécuter gcc gestionnaire.c -o gestionnaire
 ./gestionnaire
+
 Tapez(installer préalablement xfig)
 xfig log.fig
 
