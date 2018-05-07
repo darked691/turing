@@ -242,7 +242,7 @@ int verifier_format_etat_alphabet()
 	
 }	
 
- int verifier_format_transition_ruban_1(){
+ int verifier_format_transition_ruban(){
 	FILE* fichier = NULL;
     fichier = fopen("fichier", "r");
 	int i=0;
@@ -534,17 +534,17 @@ T_machine fill_matrice_t(T_machine T)
 	alloc=alloc*alloc;
 	printf("alloc early 1 %d \n",alloc);
 	
-	T.matrice_transition=malloc(NE*sizeof(int));
+	T.matrice_transition=malloc(NE+2*sizeof(Transition));
 	
 	int i=0;
 	
-	for(i=0;i<NE;i++)
-	{
-		T.matrice_transition[i]=malloc(alloc*sizeof(int));
+	 for(i=0;i<NE;i++)
+	 {
+		T.matrice_transition[i]=malloc(1000000*sizeof(Transition));
 		
 		for(t=0;t<alloc;t++)
 		T.matrice_transition[i][t]=-1;
-	}	
+	 }	
 	
 	int j=0;
 	int num=0;
@@ -742,32 +742,10 @@ Info_machine allocation(Info_machine I,T_machine T)
 	//~ for(ite=0;T.table_transition[0].symbole_actuel[ite]!='\0';ite++) {}
 	
 	//~ printf("ite %d\n",ite);
-	I.transition=malloc(sizeof(Transition)*NT+1);
-	T.table_transition[NT+1].symbole_actuel=NULL;
-	while(T.table_transition[y].symbole_actuel!=NULL) y++;
-	printf("y %d \n",y);
-		while(i!=NT-1)
-		{
-			I.transition[i].direction=malloc(sizeof(char)*NR);
+	//~ I.transition=malloc(sizeof(Transition)*NT+1);
+	//~ T.table_transition[NT+1].symbole_actuel=NULL;
+	//~ while(T.table_transition[y].symbole_actuel!=NULL) y++;
 
-			I.transition[i].symbole_suivant=malloc(sizeof(char)*NR);
-		
-			I.transition[i].symbole_actuel=malloc(sizeof(char)*NR);
-			
-			strcpy(I.transition[i].symbole_actuel,T.table_transition[i].symbole_actuel);
-			
-			strcpy(I.transition[i].symbole_suivant,T.table_transition[i].symbole_suivant);
-			
-			strcpy(I.transition[i].direction,T.table_transition[i].direction);
-			
-			//printf("I.transition->etat_actuel %d\n",I.transition->etat_actuel);
-			
-			I.transition[i].etat_actuel=T.table_transition[i].etat_actuel;
-			
-			I.transition[i].etat_suivant=T.table_transition[i].etat_suivant;
-			
-			i++;
-	 }
 	int ite;
 	 int etat[NT+1];
 	 for(i=0;i<NT+1;i++) etat[i]=-1;
@@ -848,20 +826,23 @@ Info_machine allocation(Info_machine I,T_machine T)
     j++;
 	}
 	 	fclose(fichier);
-	 	for(i=0;i<NT+1;i++) printf(" %d etat a la fin de la boucle \n", etat[i]);
+	 	for(i=0;i<NT+1;i++) 
+	 	printf(" %d etat a la fin de la boucle \n", etat[i]);
 	return I;
 }	
 void liberation_de_la_memoire(T_machine T,Info_machine I)
 {
-free(I.transition->symbole_suivant);				
-free(I.transition->symbole_actuel);				
-free(I.transition->direction);
-free(I.transition);
-free(T.table_transition->direction);
-free(T.table_transition->symbole_actuel);
-free(T.table_transition->symbole_suivant);
-free(T.table_transition);
-free(T.alpabet);
+
+//~ free(I.transition);
+//~ free(I.transition->symbole_suivant);				
+//free(I.transition->symbole_actuel);				
+//free(I.transition->direction);
+//~ free(T.table_transition);
+//~ free(T.table_transition->direction);
+//free(T.table_transition->symbole_actuel);
+//free(T.table_transition->symbole_suivant);
+//free(T.table_transition);
+//free(T.alpabet);
 }
 FILE** creation_log_latex()
 {
@@ -972,25 +953,36 @@ init_NC_();
 init_NE();
 //printf("%dNE \n",NE);
 check_etat_alphabet=verifier_format_etat_alphabet();
-check_format=verifier_format_transition_ruban_1();
+check_format=verifier_format_transition_ruban();
 T=fill_alphabet(T);
  T=fill_transition(T);
  I=allocation(I,T);
+ T=fill_matrice_t(T);
  int a=0;
- int position_texte[2];
- position_texte[0]=900;
- position_texte[1]=790;
- position_texte[2]=1;
+ int position_texte_et_nombre_page[2];
+ position_texte_et_nombre_page[0]=900;
+ position_texte_et_nombre_page[1]=790;
+ position_texte_et_nombre_page[2]=1;
  FILE** fichier;
-fichier=creation_log_latex();
-while(a!=200) 
-{
-ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte);
-a++;
-}
+ fichier=creation_log_latex();
+//~ while(a!=200) 
+//~ {
+//~ ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte_et_nombre_page);
+//~ a++;
+//~ }
 //~ ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte);
 //~ ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte);
-fermeture_log(fichier[0],fichier[1],fichier[2]);
+//~ fermeture_log(fichier[0],fichier[1],fichier[2]);
+ //free(I.transition);
+ //free(I.transition->symbole_suivant);				
+//~ free(I.transition->symbole_actuel);				
+//~ free(I.transition->direction);
+//~ free(T.table_transition);
+//~ free(T.table_transition->direction);
+//~ free(T.table_transition->symbole_actuel);
+//~ free(T.table_transition->symbole_suivant);
+ //free(T.table_transition);
+ //free(T.alpabet);
  //~ printf("check_etat_alphabet %d\n",check_etat_alphabet);
  //~ printf("check_format %d\n",check_format);
 //~ T=fill_matrice_t(T);
