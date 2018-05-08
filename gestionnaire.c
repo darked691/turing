@@ -6,6 +6,9 @@
 #include <math.h>
 #include <string.h>
 
+#define TRUE 1
+
+#define FALSE 0
 int NC;
 int NT;
 int NR;
@@ -183,7 +186,7 @@ int verifier_transition_non_vide()
 	
 	if(c=='\n' || c==' '){printf("erreur format symbole vide");return 0;}
 	
-return 1;
+	 return 1;
 }
 }
 void init_NR(T_machine T){
@@ -235,7 +238,7 @@ void init_NR(T_machine T){
 	
 	while(c!='|' || c!=EOF)
 	{
-		if(c==' '){printf("erreur format symbole vide ");exit(0);}
+		//if(c==' '){printf("erreur format symbole vide ");exit(0);}
 		symbole_actuel[k]=c;
 		c=fgetc(fic);
 		k++;
@@ -243,7 +246,7 @@ void init_NR(T_machine T){
 
 			 
 	}	
-	if(k>3) printf("erreur format Nombre de Ruban elevée");
+	
 	NR=k;
 
         fclose(fic); 
@@ -319,6 +322,11 @@ int verifier_format_etat_alphabet()
 	int nombre_bars=0;
 	int nombre_bars_vertical=0;
 	int position_caractere=2;
+	if(NR>3)
+	{
+	 printf("erreur format Nombre de Ruban elevée\n");
+	 exit(0);
+	} 
     if (fichier != NULL)
     {
 		while(c!='\n' ){ c= fgetc(fichier);}c= fgetc(fichier);
@@ -373,7 +381,7 @@ int verifier_format_etat_alphabet()
 			if(c==' ') printf("erreur format espace");
 					
          }
-         int j3=0;
+         int nombre_ligne=0;
          
          nombre_bars=0;
          
@@ -384,18 +392,20 @@ int verifier_format_etat_alphabet()
 			
 			c= fgetc(fichier);
 			
-			printf("j3 %d \n",j3);
+			printf("nombre_ligne %d \n",nombre_ligne);
 			//if(c==' ' && count==3 ) {printf("erreur format symbole vide");exit(0);}
 			
-			 if (c=='\n')j3++;
+			 if (c=='\n')nombre_ligne++;
 			
 			if(c!=' ' || c!='\n'){position_caractere++; printf("%c ----->",c); printf("%d \n",position_caractere);}
 			
-			else if((position_caractere%20==2 || position_caractere%20==6 || position_caractere%20==8 || position_caractere%20 == 10 || position_caractere%20==14 || position_caractere%20==18) && c!='|'){ printf("erreur format"); }
+			//%20 car une ligne comporte 20 caractere
+			 if((position_caractere%20==2 || position_caractere%20==6 || position_caractere%20==8 || position_caractere%20 == 10 || position_caractere%20==14 || position_caractere%20==18) && c!='|'){ printf("erreur format"); exit(0);}
 			
-			else if((position_caractere%20==1 || position_caractere%20==19) && c=='/') nombre_bars_vertical++;
+			 if((position_caractere%20==1 || position_caractere%20==19) && c=='/') nombre_bars_vertical++;
 			
-			else if(c==EOF && nombre_bars_vertical!=2*NT) printf("erreur format bars /");
+			//car une transition comporte 2 '/'
+			 if(c==EOF && nombre_bars_vertical!=2*NT) printf("erreur format bars /");
 			
 			
 			
@@ -418,9 +428,9 @@ T_machine fill_alphabet(T_machine T)
 	FILE* fichier = NULL;
     fichier = fopen("fichier", "r");
     char c='\0';
-    int j=0;
-    int i=0;
-    int k=0;
+    int position_virgule_fichier=0;
+    int position_fichier=0;
+    int position_tableau_alphabet=0;
 
     if(fichier!=NULL)
     {
@@ -431,23 +441,23 @@ T_machine fill_alphabet(T_machine T)
 		c= fgetc(fichier);
 
 		T.alpabet=malloc(sizeof(char)*NC);
-		j=0;
+		position_virgule_fichier=0;
          do
          { 
 			 
-			if(j==0)
+			if(position_virgule_fichier==0)
 			{
 			
-			k=i/2;
+			position_tableau_alphabet=position_fichier/2;
 			
-			T.alpabet[k]=c;			
+			T.alpabet[position_tableau_alphabet]=c;			
        
 			}	
-			j++;
+			position_virgule_fichier++;
 			
-			j=j%2;
+			position_virgule_fichier=position_virgule_fichier%2;
 			
-            i++;
+            position_fichier++;
             
             c= fgetc(fichier);
             
@@ -605,13 +615,13 @@ T_machine fill_matrice_t(T_machine T)
 	
 	 for(i=0;i<NE;i++)
 	 {
-		T.matrice_transition[i]=malloc(1000000*sizeof(Transition));
+		T.matrice_transition[i]=malloc(alloc*sizeof(Transition));
 		
 		for(t=0;t<alloc;t++)
 		T.matrice_transition[i][t]=-1;
 	 }	
 	
-	int j=0;
+	int numero_transition=0;
 	int num=0;
 	i=0;
 	int k=0;
@@ -621,21 +631,21 @@ T_machine fill_matrice_t(T_machine T)
 	{
 	for(i=0;i<NE;i++){
 		
-		for(j=0;j<NT;j++){
-			if(T.table_transition[j].etat_actuel==i )
+		for(numero_transition=0;numero_transition<NT;numero_transition++){
+			if(T.table_transition[numero_transition].etat_actuel==i )
 			{
 				printf("num %d\n",num);
-				printf("tt%d\n",T.table_transition[j].etat_actuel);
-				printf("tt%d\n",T.table_transition[j].etat_suivant);
+				printf("tt%d\n",T.table_transition[numero_transition].etat_actuel);
+				printf("tt%d\n",T.table_transition[numero_transition].etat_suivant);
 
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[j].symbole_actuel[0] )
+						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0] )
 						{
 							printf("alphabet[k] %c \n",T.alpabet[k]);
 							num=k;
-							T.matrice_transition[i][num]=j;
+							T.matrice_transition[i][num]=numero_transition;
 							printf("mt_f %d\n",T.matrice_transition[i][num]);
 						}
 					}
@@ -653,18 +663,18 @@ T_machine fill_matrice_t(T_machine T)
 	int r=0;
 	for(i=0;i<NE;i++)
 	{
-		for(j=0;j<NT;j++)
+		for(numero_transition=0;numero_transition<NT;numero_transition++)
 		{
-			if(T.table_transition[j].etat_actuel==i)
+			if(T.table_transition[numero_transition].etat_actuel==i)
 			{
 				printf("num %d\n",num);
-				printf("tt%d\n",T.table_transition[j].etat_actuel);
-				printf("tt%d\n",T.table_transition[j].etat_suivant);
+				printf("tt%d\n",T.table_transition[numero_transition].etat_actuel);
+				printf("tt%d\n",T.table_transition[numero_transition].etat_suivant);
 				
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[j].symbole_actuel[0])
+						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
 						{
 
 							num=k;
@@ -679,7 +689,7 @@ T_machine fill_matrice_t(T_machine T)
 					
 					for(k=0;k<NC;k++){
 					
-						if(T.alpabet[k]==T.table_transition[j].symbole_actuel[1])
+						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 							printf("k %d \n",k);
 							printf("res avant while%d\n",res);
@@ -687,7 +697,7 @@ T_machine fill_matrice_t(T_machine T)
 							printf("alphabet[k] %c \n",T.alpabet[k]);
 							printf("res apres while%d\n",res);
 							num=num+res;
-							T.matrice_transition[i][num]=j;
+							T.matrice_transition[i][num]=numero_transition;
 							printf("mt_f %d\n",T.matrice_transition[i][num]);
 						}
 				}
@@ -708,9 +718,9 @@ T_machine fill_matrice_t(T_machine T)
 	for(i=0;i<NE;i++)
 	{
 		
-		for(j=0;j<NT;j++)
+		for(numero_transition=0;numero_transition<NT;numero_transition++)
 		{
-			if(T.table_transition[j].etat_actuel==i)
+			if(T.table_transition[numero_transition].etat_actuel==i)
 			{
 				
 				printf("T.table_transition.symbole_actuel %c  \n",T.table_transition[2].symbole_actuel[0]);
@@ -719,7 +729,7 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[j].symbole_actuel[0])
+						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
 						{
 							printf("%c",T.alpabet[k]);
 							num=k;
@@ -734,7 +744,7 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[j].symbole_actuel[1])
+						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
 							while(t!=NC) {t++; res=res*k;}
@@ -748,7 +758,7 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[j].symbole_actuel[2])
+						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[2])
 						{
 
 							
@@ -760,7 +770,7 @@ T_machine fill_matrice_t(T_machine T)
 							
 							printf(" mt_f %d\n",T.matrice_transition[i][num]);
 							
-							T.matrice_transition[i][num]=j;
+							T.matrice_transition[i][num]=numero_transition;
 						}
 					}
 				printf("num %d\n",num);
@@ -773,32 +783,36 @@ T_machine fill_matrice_t(T_machine T)
 }
 	return T;
 }
-int partitionner(int *tableau, int p, int r) {
-    int pivot = tableau[p], i = p-1, j = r+1;
-    int temp;
-    while (1) {
-        do
-            j--;
-        while (tableau[j] > pivot);
-        do
-            i++;
-        while (tableau[i] < pivot);
-        if (i < j) {
-            temp = tableau[i];
-            tableau[i] = tableau[j];
-            tableau[j] = temp;
+
+
+
+
+void tri_a_bulle_d(int *t,int n){
+
+    int j =0;int tmp =0;int test =1;
+
+    while(test){
+
+        test = FALSE;
+
+        for(j =n-1; j >0; j--){
+
+            if(t[j] > t[j-1]){
+
+                    tmp = t[j-1];
+
+                    t[j-1] = t[j];
+
+                    t[j] = tmp;
+
+                    test = TRUE;
+
+            }
+
         }
-        else
-            return j;
+
     }
-}
-void quickSort(int *tableau, int p, int r) {
-    int q;
-    if (p < r) {
-        q = partitionner(tableau, p, r);
-        quickSort(tableau, p, q);
-        quickSort(tableau, q+1, r);
-    }
+
 }
 Info_machine allocation(Info_machine I,T_machine T)	
 {	int i=0;
@@ -818,7 +832,7 @@ Info_machine allocation(Info_machine I,T_machine T)
 	 printf("NT %d\n",NT);
 	 	 for(ite=0;ite<NT;ite++)
 	 	 {
-			 //printf("etat_suivant %d\n",T.table_transition[ite].etat_suivant);
+			 printf("etat_suivant %d\n",T.table_transition[ite].etat_suivant);
 			  printf("ite %d\n",ite);
 
 			  for(i=0;i<NT+1;i++)
@@ -828,21 +842,24 @@ Info_machine allocation(Info_machine I,T_machine T)
 				 //printf("ok");
 				 i=NT+1;
 			 }
-			 else if(etat[i]==-1)
+			 if(etat[i]==-1)
 			 {
 				 etat[i]=T.table_transition[ite].etat_suivant;
 				 printf("i %d",i);
+				 				  printf(" etat %d\n",etat[i]);
+				  printf("etat_suivant_dans boucle %d\n",T.table_transition[ite].etat_suivant);
 				 i=NT+1;
 				 
-				  printf(" etat %d\n",etat[ite]);
-				  //printf("etat_suivant %d\n",I.transition[i].etat_suivant);
+
 				   
 			 }	  
 			 
 			 }
 			
 		}
-	quickSort(etat,0,NT+1);
+		for(i=0;i<NT+1;i++)  printf(" etat %d\n",etat[i]);
+	tri_a_bulle_d(etat,NT+1);
+	for(i=0;i<NT+1;i++)  printf(" etat apres le tri %d\n",etat[i]);
 	FILE* fichier = NULL;
     fichier = fopen("test", "w");
     char c='\0';
@@ -852,7 +869,9 @@ Info_machine allocation(Info_machine I,T_machine T)
     fputs("[",fichier);
     while(j<NT+1)
     {
+	
     fprintf(fichier,"%d",etat[j]);
+    if(etat[j+1]==-1)	break;
     if(j<NT) 
     fputs(",",fichier);
     j++;
