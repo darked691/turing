@@ -600,11 +600,11 @@ T_machine fill_transition(T_machine T)
 T_machine fill_matrice_t(T_machine T)
 {
 
-	int res=1;
+	int resultat=1;
 	
-	int t=0;
+	int puissance=0;
 	int alloc=1;
-		while(t!=3) {t++; alloc=alloc*NC;}
+		while(puissance!=3) {puissance++; alloc=alloc*NC;}
 		printf("alloc early %d \n",alloc);
 	alloc=alloc*alloc;
 	printf("alloc early 1 %d \n",alloc);
@@ -612,20 +612,20 @@ T_machine fill_matrice_t(T_machine T)
 	T.matrice_transition=malloc(NE+2*sizeof(Transition));
 	
 	int i=0;
-	
+	int j=0;
 	 for(i=0;i<NE;i++)
 	 {
 		T.matrice_transition[i]=malloc(alloc*sizeof(Transition));
 		
-		for(t=0;t<alloc;t++)
-		T.matrice_transition[i][t]=-1;
+		for(j=0;j<alloc;j++)
+		T.matrice_transition[i][j]=-1;
 	 }	
 	
 	int numero_transition=0;
-	int num=0;
+	int numero_indice_matrice=0;
 	i=0;
 	int k=0;
-	t=0;
+
 	
 	if(NR==1)
 	{
@@ -634,7 +634,7 @@ T_machine fill_matrice_t(T_machine T)
 		for(numero_transition=0;numero_transition<NT;numero_transition++){
 			if(T.table_transition[numero_transition].etat_actuel==i )
 			{
-				printf("num %d\n",num);
+				printf("num %d\n",numero_indice_matrice);
 				printf("tt%d\n",T.table_transition[numero_transition].etat_actuel);
 				printf("tt%d\n",T.table_transition[numero_transition].etat_suivant);
 
@@ -644,12 +644,12 @@ T_machine fill_matrice_t(T_machine T)
 						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0] )
 						{
 							printf("alphabet[k] %c \n",T.alpabet[k]);
-							num=k;
-							T.matrice_transition[i][num]=numero_transition;
-							printf("mt_f %d\n",T.matrice_transition[i][num]);
+							numero_indice_matrice=k;
+							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
+							printf("mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 						}
 					}
-				printf("num %d\n",num);
+				printf("num %d\n",numero_indice_matrice);
 				printf("i %d\n",i);
 
 				printf("---------------------\n");
@@ -667,7 +667,7 @@ T_machine fill_matrice_t(T_machine T)
 		{
 			if(T.table_transition[numero_transition].etat_actuel==i)
 			{
-				printf("num %d\n",num);
+				
 				printf("tt%d\n",T.table_transition[numero_transition].etat_actuel);
 				printf("tt%d\n",T.table_transition[numero_transition].etat_suivant);
 				
@@ -676,32 +676,33 @@ T_machine fill_matrice_t(T_machine T)
 					
 						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
 						{
-
-							num=k;
+							printf("numero 1er boucle %d\n",numero_indice_matrice);
+							numero_indice_matrice=k;
 						}
 					}
 					
-					t=0;
+					puissance=0;
 					
-					printf("num aa %d\n",num);
+	
 					
-					res=1;
+					resultat=1;
 					
 					for(k=0;k<NC;k++){
 					
 						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 							printf("k %d \n",k);
-							printf("res avant while%d\n",res);
-							while(t!=NC) {t++; res=res*k;}
+							printf("res avant while%d\n",resultat);
+							while(puissance!=NC) {puissance++; resultat=resultat*k;}
 							printf("alphabet[k] %c \n",T.alpabet[k]);
-							printf("res apres while%d\n",res);
-							num=num+res;
-							T.matrice_transition[i][num]=numero_transition;
-							printf("mt_f %d\n",T.matrice_transition[i][num]);
+							printf("res apres while%d\n",resultat);
+							numero_indice_matrice=numero_indice_matrice+resultat;
+							printf("numero 2er boucle %d\n",numero_indice_matrice);
+							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
+							printf("mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 						}
 				}
-				printf("num a%d\n",num);
+				printf("num a%d\n",numero_indice_matrice);
 				printf("i %d\n",i);
 				printf("---------------------\n");
 		}	
@@ -724,7 +725,7 @@ T_machine fill_matrice_t(T_machine T)
 			{
 				
 				printf("T.table_transition.symbole_actuel %c  \n",T.table_transition[2].symbole_actuel[0]);
-				printf("num %d\n",num);
+				
 					
 					for(k=0;k<NC;k++)
 					{
@@ -732,14 +733,15 @@ T_machine fill_matrice_t(T_machine T)
 						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
 						{
 							printf("%c",T.alpabet[k]);
-							num=k;
+							numero_indice_matrice=k;
+							printf("numero 1er boucle %d\n",numero_indice_matrice);
 						
 						}
 					}
 						
-					t=0;
+					puissance=0;
 					
-					res=1;
+					resultat=1;
 					
 					for(k=0;k<NC;k++)
 					{
@@ -747,12 +749,13 @@ T_machine fill_matrice_t(T_machine T)
 						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
-							while(t!=NC) {t++; res=res*k;}
+							while(puissance!=NC) {puissance++; resultat=resultat*k;}
 							
 							printf("%c",T.alpabet[k]);
 							
 							
-							num=num+res;
+							numero_indice_matrice=numero_indice_matrice+resultat;
+							printf("\n nnumero 2er boucle %d\n",numero_indice_matrice);
 						}
 					}	
 					for(k=0;k<NC;k++)
@@ -762,20 +765,21 @@ T_machine fill_matrice_t(T_machine T)
 						{
 
 							
-							res=res*res;
+							resultat=resultat*resultat;
 							
 							printf("%c \n",T.alpabet[k]);
 							
-							num=num+res;
+							numero_indice_matrice=numero_indice_matrice+resultat;
+							printf("\n numero 3er boucle %d\n",numero_indice_matrice);
 							
-							printf(" mt_f %d\n",T.matrice_transition[i][num]);
+							printf(" mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 							
-							T.matrice_transition[i][num]=numero_transition;
+							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
 						}
 					}
-				printf("num %d\n",num);
+
 				printf("i %d\n",i);
-				printf(" mt_f %d\n",T.matrice_transition[i][num]);
+				printf(" mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 				printf("---------------------\n");
 		}	
 	}
@@ -787,7 +791,7 @@ T_machine fill_matrice_t(T_machine T)
 
 
 
-void tri_a_bulle_d(int *t,int n){
+void tri_a_bulle_c(int *t,int n){
 
     int j =0;int tmp =0;int test =1;
 
@@ -795,15 +799,13 @@ void tri_a_bulle_d(int *t,int n){
 
         test = FALSE;
 
-        for(j =n-1; j >0; j--){
+        for(j =0; j < n-1; j++){
 
-            if(t[j] > t[j-1]){
+            if(t[j] > t[j+1]){
 
-                    tmp = t[j-1];
+                    tmp = t[j+1];
 
-                    t[j-1] = t[j];
-
-                    t[j] = tmp;
+                    t[j+1] = t[j];t[j] = tmp;
 
                     test = TRUE;
 
@@ -858,7 +860,7 @@ Info_machine allocation(Info_machine I,T_machine T)
 			
 		}
 		for(i=0;i<NT+1;i++)  printf(" etat %d\n",etat[i]);
-	tri_a_bulle_d(etat,NT+1);
+	tri_a_bulle_c(etat,NT+1);
 	for(i=0;i<NT+1;i++)  printf(" etat apres le tri %d\n",etat[i]);
 	FILE* fichier = NULL;
     fichier = fopen("test", "w");
@@ -869,12 +871,14 @@ Info_machine allocation(Info_machine I,T_machine T)
     fputs("[",fichier);
     while(j<NT+1)
     {
-	
+	if(etat[j]!=-1)
+	{
     fprintf(fichier,"%d",etat[j]);
-    if(etat[j+1]==-1)	break;
+
     if(j<NT) 
     fputs(",",fichier);
     j++;
+	}
 	}
     fputs("]",fichier);
     fputs("\n",fichier);
