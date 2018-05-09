@@ -820,7 +820,7 @@ void tri_a_bulle_c(int *t,int n){
     }
 
 }
-Info_machine allocation(Info_machine I,T_machine T)	
+Info_machine conversion_donne_fichier(Info_machine I,T_machine T)	
 {	int i=0;
 	int y=0;
 	//~ int ite=0;
@@ -836,6 +836,7 @@ Info_machine allocation(Info_machine I,T_machine T)
 	 for(i=0;i<NT+1;i++) etat[i]=-1;
 	 etat[0]=T.table_transition[0].etat_actuel;
 	 printf("NT %d\n",NT);
+	 //remplir le tableau etat d'état le trier et l'écrire dans le fichier
 	 	 for(ite=0;ite<NT;ite++)
 	 	 {
 			 printf("etat_suivant %d\n",T.table_transition[ite].etat_suivant);
@@ -863,9 +864,10 @@ Info_machine allocation(Info_machine I,T_machine T)
 			 }
 			
 		}
-		for(i=0;i<NT+1;i++)  printf(" etat %d\n",etat[i]);
+		//for(i=0;i<NT+1;i++)  printf(" etat %d\n",etat[i]);
 	tri_a_bulle_c(etat,NT+1);
-	for(i=0;i<NT+1;i++)  printf(" etat apres le tri %d\n",etat[i]);
+	//for(i=0;i<NT+1;i++)  printf(" etat apres le tri %d\n",etat[i]);
+	
 	FILE* fichier = NULL;
     fichier = fopen("test", "w");
     char c='\0';
@@ -1051,7 +1053,7 @@ check_etat_alphabet=verifier_format_etat_alphabet();
 check_format=verifier_format_transition_ruban();
 T=fill_alphabet(T);
  T=fill_transition(T);
- I=allocation(I,T);
+ I=conversion_donne_fichier(I,T);
  T=fill_matrice_t(T);
  int a=0;
  int position_texte_et_nombre_page[2];
