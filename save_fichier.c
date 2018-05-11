@@ -1,4 +1,5 @@
 #include "definition.h"
+//tri un tableau dans l'ordre croissant
 void tri_a_bulle_c(int *t,int n){
 
     int j =0;int tmp =0;int test =1;
@@ -24,6 +25,7 @@ void tri_a_bulle_c(int *t,int n){
     }
 
 }
+//sauvegarde un fichier
 Info_machine conversion_donne_fichier(Info_machine I,T_machine T)	
 {	int i=0;
 	int y=0;
@@ -78,6 +80,8 @@ Info_machine conversion_donne_fichier(Info_machine I,T_machine T)
     int j=0;
     while(etat[j]==-1) ++j;
     //printf(" j %d",j);
+    
+    //ecriture de l'ensemble des états
     fputs("[",fichier);
     while(j<NT+1)
     {
@@ -92,6 +96,8 @@ Info_machine conversion_donne_fichier(Info_machine I,T_machine T)
 	}
     fputs("]",fichier);
     fputs("\n",fichier);
+    
+    //ecriture de l'ensemble des caractéres de l'alphabets
     j=0;
     fputs("[",fichier);
     while(j<NC)
@@ -105,6 +111,7 @@ Info_machine conversion_donne_fichier(Info_machine I,T_machine T)
     fputs("\n",fichier);
     j=0;
     
+  //ecriture des transitions    
     while(j<NT)
     {
 	fputs("/",fichier);	

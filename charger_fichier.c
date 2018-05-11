@@ -339,6 +339,7 @@ T_machine fill_transition(T_machine T)
 	fclose(fichier);
 	return T;
 }   
+//fonction qui rempli la matrice de transition
 T_machine fill_matrice_t(T_machine T)
 {
 
@@ -346,13 +347,14 @@ T_machine fill_matrice_t(T_machine T)
 	
 	int puissance=0;
 	int alloc=1;
+	//calcule de la taille maximal du pointeur matrice de transition
 		while(puissance!=NR) {puissance++; alloc=alloc*NC;}
-		printf("alloc early %d \n",alloc);
+
 		if(NR==3)
-	alloc=alloc+NC*NC+NC;
+		alloc=alloc+NC*NC+NC;
 	   else if(NR==2)
 	   alloc=alloc+NC;
-	printf("alloc early 1 %d \n",alloc);
+
 	
 	T.matrice_transition=malloc(NE+2*sizeof(Transition));
 	
@@ -371,7 +373,10 @@ T_machine fill_matrice_t(T_machine T)
 	i=0;
 	int k=0;
 
-	
+	//on dissocie les cas ou le nombre de ruban est égale à 1,2,3
+	//selon les cas on remplie la matrice de transition différement 
+	//pour le cas 1, on cherche pour chaque transition dans la table de transition la place du caractere "symbole actuel[0]" dans le tableau alphabet
+	// qui contient tout les symboles de l'alphabet
 	if(NR==1)
 	{
 	for(i=0;i<NE;i++){
@@ -403,6 +408,11 @@ T_machine fill_matrice_t(T_machine T)
 		}
 	}
 }
+    //pour le cas 2, on cherche pour chaque transition dans la table de transition la place du caractere(=nombre 1) "symbole actuel[0]" dans le tableau alphabet
+	// qui contient tout les symboles de l'alphabet
+	// on cherche pour chaque transition dans la table de transition la place du caractere(=nombre 2) "symbole actuel[1]" dans le tableau alphabet
+	// qui contient tout les symboles de l'alphabet
+	// on calcule nombre1+(nombre2 puissance nombre de ruban) pour obtenir indice de la matrice 
 	else if(NR==2)
 	{
 	int r=0;
@@ -454,7 +464,13 @@ T_machine fill_matrice_t(T_machine T)
 }
 		
 }
-
+    //pour le cas 3, on cherche pour chaque transition dans la table de transition la place du caractere(=nombre 1) "symbole actuel[0]" dans le tableau alphabet
+	// qui contient tout les symboles de l'alphabet
+	// on cherche pour chaque transition dans la table de transition la place du caractere(=nombre 2) "symbole actuel[1]" dans le tableau alphabet
+	// qui contient tout les symboles de l'alphabet
+	// on cherche pour chaque transition dans la table de transition la place du caractere(=nombre 3) "symbole actuel[2]" dans le tableau alphabet
+	// qui contient tout les symboles de l'alphabet
+	// on calcule nombre1+(nombre2 puissance nombre de ruban-1)+(nombre3 puissance nombre de ruban) pour obtenir indice de la matrice 
 	else if(NR==3)
 	{
 		int r=0;

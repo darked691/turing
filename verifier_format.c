@@ -1,4 +1,5 @@
 #include "definition.h"
+//verifie si le format pour le tableau état et alphabet dans le fichier est respécté
 int verifier_format_etat_alphabet()
 {
 	FILE* fichier=NULL;
@@ -14,6 +15,8 @@ int verifier_format_etat_alphabet()
             c= fgetc(fichier); 
             
             if(c=='[') {parenthese++; c= fgetc(fichier); }
+            
+            //si on arrive à la fin du tableau on sort de la boucle 
             if(c==']') {parenthese++; break;}
             
             nombre++;
@@ -58,7 +61,7 @@ int verifier_format_etat_alphabet()
          return 1;
 	
 }	
-
+//verifie sir le format transition est respécté
  int verifier_format_transition_ruban(){
 	FILE* fichier = NULL;
     fichier = fopen("fichier", "r");
@@ -76,6 +79,7 @@ int verifier_format_etat_alphabet()
 	} 
     if (fichier != NULL)
     {
+		//on saute des lignes pour accéder au transition
 		while(c!='\n' ){ c= fgetc(fichier);}c= fgetc(fichier);
 		while(c!='\n' ){ c= fgetc(fichier);}c= fgetc(fichier);
 		while(c!='\n' ){ c= fgetc(fichier);}
@@ -84,7 +88,7 @@ int verifier_format_etat_alphabet()
 
 		
 		if(c!='/'){ printf("erreur format /");exit(0);}
-		//if(c==' '){ printf("erreur format manque /");exit(0);}
+
 		 
 		if(c=='/'){ nombre_bars_vertical++;}
 		
@@ -140,7 +144,7 @@ int verifier_format_etat_alphabet()
 			c= fgetc(fichier);
 			
 			printf("nombre_ligne %d \n",nombre_ligne);
-			//if(c==' ' && count==3 ) {printf("erreur format symbole vide");exit(0);}
+	
 			
 			 if (c=='\n')nombre_ligne++;
 			
@@ -170,6 +174,7 @@ fclose(fichier);
 
 return 1;
 }  
+//verifie si les transitions n'ont pas été effacés
 int verifier_transition_non_vide()
 {
 		

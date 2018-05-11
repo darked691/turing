@@ -1,10 +1,13 @@
 #include "definition.h"
+//creation des fichiers log et écritures des elements initiales dans le fichier 
 FILE** creation_log_latex()
 {
 	FILE** fichier;
 	fichier=malloc(sizeof(FILE)*3);
+	//creation du premier fichier log en latex 
 	fichier[0]=fopen("log.tex","w");
 	fputc(92,fichier[0]);
+	//écriture des éléments initiales dans le fichier latex
 fputs("documentclass{article}",fichier[0]);
 fputc(10,fichier[0]);
 fputc(92,fichier[0]);
@@ -18,7 +21,9 @@ fputs("begin{verbatim}",fichier[0]);
 fputc(10,fichier[0]);
 fputs("Transition effectue:",fichier[0]);
 //fichier2
+//creation du deuxième fichier log en xfig
 fichier[1]=fopen("log.fig","w");
+//écriture des éléments initiales dans le fichier xfig
 fputs("#FIG 3.2  Produced by xfig version 3.2.7\n",fichier[1]);
 fputs("Landscape\n",fichier[1]);
 fputs("Center\n",fichier[1]);
@@ -33,7 +38,9 @@ fputs("Transition effectue",fichier[1]);
 fputc(92,fichier[1]);
 fputs("001\n",fichier[1]);
 //fichier3
+//creation du troisième fichier log en Postscript
 fichier[2]=fopen("log.ps","w");
+//écriture des éléments initiales dans le fichier ps
 fputs("%!PS-Adobe-3.0\n\n",fichier[2]);
 fputs("%%Page: 1 1\n",fichier[2]);
 fputs("%%BeginPageSetup\n",fichier[2]);
@@ -44,13 +51,16 @@ fputs(" /Helvetica findfont 8 scalefont setfont\n",fichier[2]);
 fputs("100 800 16 sub moveto\n",fichier[2]);
 fputs("(Transition effectue:) show\n",fichier[2]);
 return fichier;
-}		
+}	
+//écriture de la dernière transition effectué  contenue dans la variable "int derniere_transition"	pour chaque fichier
 void ecrire_log(T_machine T,FILE* fichier1,FILE* fichier2,FILE* fichier3,int *position_texte)
 {
+//fichier 1
 fputc(10,fichier1);
 fputs("Etat : ",fichier1);
 fprintf(fichier1,"%d",T.table_transition[2].etat_actuel);
 fputc(10,fichier1);
+//fichier 2
 fputs("4 0 0 50 -1 0 16 0.0000 4 135 420 2475",fichier2);
 position_texte[0]=position_texte[0]+290;
 fprintf(fichier2," %d ",position_texte[0]);
@@ -59,7 +69,7 @@ fprintf(fichier2,"%d",T.table_transition[2].etat_actuel);
 fputc(92,fichier2);
 fputs("001\n",fichier2);
 
-//fichier 2
+//fichier 3
 fputs("100 ",fichier3);
 fprintf(fichier3,"%d",position_texte[1]);
 fputs(" 16 sub moveto\n",fichier3);
@@ -82,6 +92,7 @@ fputs("(Transition effectue:) show\n",fichier3);
 position_texte[1]=790;
 }	
 }
+//écriture des éléments finaux pour chacun de ses 3 fichier et fermeture de ces fichiers
 void fermeture_log(FILE* fichier1,FILE* fichier2,FILE* fichier3)
 {
 fputs("showpage\n",fichier3);
