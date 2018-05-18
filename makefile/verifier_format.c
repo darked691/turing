@@ -108,7 +108,7 @@ int verifier_format_etat_alphabet()
 	int nombre_bars=0;
 	int nombre_bars_vertical=0;
 	int position_caractere=2;
-	char* message=malloc(8*sizeof(char));
+	char message[8];
 	printf("%d \n",NR);
 	if(NR>3)
 	{
