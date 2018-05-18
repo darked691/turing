@@ -237,7 +237,7 @@ T_machine fill_transition(T_machine T)
 		
 			i=0;
 		
-		while(i!=NC-1 && c!='|')
+		while(i<NR && c!='|')
 		{
 		
 			T.table_transition[j].symbole_actuel[i]=c;
@@ -251,8 +251,10 @@ T_machine fill_transition(T_machine T)
 			c=fgetc(fichier);
 			
 		}
+		T.table_transition[j].symbole_actuel[NR]='\0';
 	 
 	c=fgetc(fichier);
+	//printf("**%c\n",c);
 		
 	i=0;
 		
@@ -292,7 +294,7 @@ T_machine fill_transition(T_machine T)
 	
 	i=0;
 	
-	    while(i!=NC-1 && c!='|')
+	    while(i<NR && c!='|')
 	    {
 			T.table_transition[j].symbole_suivant[i]=c;
 		
@@ -305,6 +307,7 @@ T_machine fill_transition(T_machine T)
 			c=fgetc(fichier);
 		
 		}
+		T.table_transition[j].symbole_suivant[NR]='\0';
 	c=fgetc(fichier);
 	i=0;
 	
