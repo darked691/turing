@@ -11,7 +11,8 @@ int main(int argc, char **argv)
 	gtk_init(&argc, &argv);
 int check_etat_alphabet=0;
 int check_format=0;
-
+char* path=malloc(1024*sizeof(char));
+scanf("%s",path);
 T_machine T;
 Info_machine I;
 
@@ -44,5 +45,6 @@ a++;
 }
 
 fermeture_log(fichier[0],fichier[1],fichier[2]);
+free(path);
 
 }

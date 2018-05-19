@@ -1,0 +1,49 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+\section{fonctionnement du gestionnaire E/S}
+
+\textit{Le gestionnaire E/S est composée de plusieurs fonctionnalité}
+
+\subsection{verifier le format}
+\begin{verbatim}
+les fonctions verifier_format_etat_alphabet(),verifier_format_transition()
+se charge de la fonctionalité verifier_format,
+lorsque l'utilisateur charge un fichier,ces fonctions verifie si le format 
+du fichier respecte le format prédéfinie 
+\end{verbatim}
+
+\subsection{charger fichier}
+\begin{verbatim}
+la fonction charger_fichier() se charge de la fonctionalité charger fichier,
+l'interface envoie le nom du fichier à la fonction chargé fichier
+qui l'ouvre pour extraire les données et les enregistrer 
+ dans les variables de la structures T_machine,
+les variable globales(=NC,NE,NR,NT) et remplir la matrice de transition
+\end{verbatim}
+
+\subsection{sauvegarde d'un fichier}
+\begin{verbatim}
+la fonction conversion_donne_fichier() se charge de la fonctionalité 
+sauvegarde fichier,
+l'interface envoie des données et le nom du fichier
+ où on va sauvegarder les données à la fonction conversion_donne_fichier.
+cette fonction cree le fichier à partir du nom du fichier reçu par l'interface 
+et enregistre les données reçu par l'interface
+(=qui correspond à  la structure machine_info) dans le fichier
+\end{verbatim}
+\subsection{creation des logs}
+\begin{verbatim}
+les fonctions creation_log(),ecriture_log(T_machine T,FILE* fichier1,
+FILE* fichier2,FILE* fichier3,int *position_texte),fermeture_log() se charge
+de la fonctionalité création des logs
+- la fonction création_log() va ouvrir 3 fichier
+1 fichier en latex
+1 fichier en postscript
+1 fichier  en xfig
+- la fonction ecrire_log ecrire chaque transition effectué par le programme
+-la fonction fermeture_log ferme les fichier_log
+
+\end{verbatim}
+\end{document}
