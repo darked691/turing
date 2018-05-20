@@ -7,11 +7,11 @@
 #include <string.h>
 #include "definition.h"
 
-void init_NC_()
+void init_NC_(char* path)
 {
 	NC=0;
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
 	int i=0;
 	char c = '\0'; 
     if (fichier != NULL)
@@ -31,10 +31,10 @@ void init_NC_()
 	}		
 }
 
-void init_NE()
+void init_NE(char* path)
 {	
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
 	int i=0;
 	char c = '\0'; 
 	NE=0;
@@ -59,11 +59,11 @@ void init_NE()
 	}		
 }	
 
-void init_NT(T_machine T)
+void init_NT(char* path)
 {
 
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
 	int i=0;
 	char c = '\0';
 	int nb_ligne=0; 
@@ -94,13 +94,13 @@ void init_NT(T_machine T)
 	}
 }
 
-void init_NR(T_machine T)
+void init_NR(char* path)
 {
 	
 	
 	FILE* fic = NULL;
 	
-    fic = fopen("fichier", "r");
+    fic = fopen(path, "r");
     
     char symbole_actuel[3];
     
@@ -159,10 +159,10 @@ void init_NR(T_machine T)
 	}
 }
 
-T_machine fill_alphabet(T_machine T)
+T_machine fill_alphabet(T_machine T,char* path)
 {
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
     char c='\0';
     int position_virgule_fichier=0;
     int position_fichier=0;
@@ -204,10 +204,10 @@ T_machine fill_alphabet(T_machine T)
 return T;      
 }    
 
-T_machine fill_transition(T_machine T)
+T_machine fill_transition(T_machine T,char* path)
 {
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
     char c='\0';
     int j=0;
     int i=0;
@@ -565,3 +565,17 @@ void liberation_de_la_memoire(T_machine T,Info_machine I)
 //free(T.table_transition);
 //free(T.alpabet);
 }
+
+T_machine charger_fichier(T_machine T,char* path)
+{
+	init_NC_(path);
+	init_NE(path);
+	init_NR(path);
+	init_NT(path);	
+	T=fill_alphabet(T,path);
+	T=fill_transition(T,path);
+	T=fill_matrice_t(T);
+	
+return T;	
+}
+	

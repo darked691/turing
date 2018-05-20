@@ -20,19 +20,17 @@ Info_machine I;
 
 
 
-init_NR(T);
- init_NT(T);	
-init_NC_();
-init_NE();
+if(verifier_transition_non_vide()==1)
+T=charger_fichier(T,"fichier");
 
 //printf("%dNE \n",NE);
-check_etat_alphabet=verifier_format_etat_alphabet();
-check_format=verifier_format_transition_ruban();
-T=fill_alphabet(T);
- T=fill_transition(T);
+//~ check_etat_alphabet=verifier_format_etat_alphabet();
+//~ check_format=verifier_format_transition_ruban();
+//~ T=fill_alphabet(T);
+ //~ T=fill_transition(T);
 
  //~ I=conversion_donne_fichier(I,T);
- T=fill_matrice_t(T);
+ //~ T=fill_matrice_t(T);
  //~ int a=0;
  //~ int position_texte_et_nombre_page[2];
  //~ position_texte_et_nombre_page[0]=900;

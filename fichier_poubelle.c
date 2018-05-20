@@ -2,7 +2,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
-#include "in_nouvelle_machine.h"
+
 #define NBR_TRANSITION 1024												//Nombre de transition max autorisées
 //remember : mettre les mots dans string[NR]
 
