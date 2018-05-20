@@ -2,11 +2,13 @@
 \usepackage[utf8]{inputenc}
 \begin{document}
 
-\section{fonctionnement du gestionnaire E/S}
+\section{fonctionnement}
+
+\subsection{fonctionnement du gestionnaire E/S}
 
 \textit{Le gestionnaire E/S est composée de plusieurs fonctionnalité}
 
-\subsection{verifier le format}
+\paragraph{verifier le format}
 \begin{verbatim}
 les fonctions verifier_format_etat_alphabet(),verifier_format_transition()
 se charge de la fonctionalité verifier_format,
@@ -14,7 +16,7 @@ lorsque l'utilisateur charge un fichier,ces fonctions verifie si le format
 du fichier respecte le format prédéfinie 
 \end{verbatim}
 
-\subsection{charger fichier}
+\paragraph{charger fichier}
 \begin{verbatim}
 la fonction charger_fichier() se charge de la fonctionalité charger fichier,
 l'interface envoie le nom du fichier à la fonction chargé fichier
@@ -23,7 +25,7 @@ qui l'ouvre pour extraire les données et les enregistrer
 les variable globales(=NC,NE,NR,NT) et remplir la matrice de transition
 \end{verbatim}
 
-\subsection{sauvegarde d'un fichier}
+\paragraph{sauvegarde d'un fichier}
 \begin{verbatim}
 la fonction conversion_donne_fichier() se charge de la fonctionalité 
 sauvegarde fichier,
@@ -33,7 +35,7 @@ cette fonction cree le fichier à partir du nom du fichier reçu par l'interface
 et enregistre les données reçu par l'interface
 (=qui correspond à  la structure machine_info) dans le fichier
 \end{verbatim}
-\subsection{creation des logs}
+\paragraph{creation des logs}
 \begin{verbatim}
 les fonctions creation_log(),ecriture_log(T_machine T,FILE* fichier1,
 FILE* fichier2,FILE* fichier3,int *position_texte),fermeture_log() se charge
@@ -47,3 +49,5 @@ de la fonctionalité création des logs
 
 \end{verbatim}
 \end{document}
+\section{Organisation interne du groupe}
+Ce tableau montre l'assignement des modules pour chaque membre du groupe:

@@ -34,8 +34,8 @@ Info_machine conversion_donne_fichier(Info_machine I,T_machine T)
 	
 	//~ printf("ite %d\n",ite);
 	//~ I.transition=malloc(sizeof(Transition)*NT+1);
-	//~ T.table_transition[NT+1].symbole_actuel=NULL;
-	//~ while(T.table_transition[y].symbole_actuel!=NULL) y++;
+	//~ ce que ta fait I.transition[NT+1]=NULL;
+	//~ while(T.table_transition[y].!=NULL) nombre_transition++;
 
 	int ite;
 	 int etat[NT+1];
@@ -102,7 +102,7 @@ Info_machine conversion_donne_fichier(Info_machine I,T_machine T)
     fputs("[",fichier);
     while(j<NC)
     {
-	fprintf(fichier,"%c",T.alpabet[j]);
+	fprintf(fichier,"%c",T.alphabet[j]);
 	if(j<NC-1) fputs(",",fichier);
     j++;
 	}

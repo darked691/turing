@@ -182,7 +182,7 @@ T_machine fill_alphabet(T_machine T)
     
 		c= fgetc(fichier);
 
-		T.alpabet=malloc(sizeof(char)*NC);
+		T.alphabet=malloc(sizeof(char)*NC);
 		position_virgule_fichier=0;
          do
          { 
@@ -192,7 +192,7 @@ T_machine fill_alphabet(T_machine T)
 			
 			position_tableau_alphabet=position_fichier/2;
 			
-			T.alpabet[position_tableau_alphabet]=c;			
+			T.alphabet[position_tableau_alphabet]=c;			
        
 			}	
 			position_virgule_fichier++;
@@ -393,7 +393,7 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0] )
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[0] )
 						{
 
 							numero_indice_matrice=k;
@@ -431,7 +431,7 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
 						{
 							
 							numero_indice_matrice=k;
@@ -447,11 +447,11 @@ T_machine fill_matrice_t(T_machine T)
 					
 					for(k=0;k<NC;k++){
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
-							while(puissance!=NR) {puissance++; resultat=resultat*k;}
-							
+							while(puissance!=NR) {puissance++; resultat=resultat*NC;}
+							resultat=resultat*k;
 							numero_indice_matrice=numero_indice_matrice+resultat;
 							printf("numero 2er boucle %d\n",numero_indice_matrice);
 							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
@@ -492,9 +492,9 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
 						{
-							printf("%c",T.alpabet[k]);
+							printf("%c",T.alphabet[k]);
 							numero_indice_matrice=k;
 							printf("numero 1er boucle %d\n",numero_indice_matrice);
 						
@@ -508,14 +508,14 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
-							while(puissance!=NR-1) {resultat=resultat*k; puissance++; }
+							while(puissance!=NR-1) {resultat=resultat*NC; puissance++; }
 							
-							printf("%c",T.alpabet[k]);
+							printf("%c",T.alphabet[k]);
 							
-							
+							resultat=resultat*k;
 							numero_indice_matrice=numero_indice_matrice+resultat;
 							printf("\n nnumero 2er boucle %d\n",numero_indice_matrice);
 						}
@@ -526,13 +526,13 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[2])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[2])
 						{
  
-							while(puissance!=NR) {puissance++; resultat=resultat*k;}
+							while(puissance!=NR) {puissance++; resultat=resultat*NC;}
 							//resultat=resultat*resultat;
-							
-							printf("%c \n",T.alpabet[k]);
+							resultat=resultat*k;
+							printf("%c \n",T.alphabet[k]);
 							
 							numero_indice_matrice=numero_indice_matrice+resultat;
 							printf("\n numero 3er boucle %d\n",numero_indice_matrice);
