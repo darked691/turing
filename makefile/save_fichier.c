@@ -1,4 +1,4 @@
-#include "definition.h"
+#include "save_fichier.h"
 //tri un tableau dans l'ordre croissant
 void tri_a_bulle_c(int *t,int n){
 
@@ -26,41 +26,42 @@ void tri_a_bulle_c(int *t,int n){
 
 }
 //sauvegarde un fichier
-Info_machine conversion_donne_fichier(Info_machine I,T_machine T)	
+void conversion_donne_fichier(char* path, Info_machine I)	
 {	int i=0;
 	int y=0;
+	NC = strlen(I.alphabet);
 	//~ int ite=0;
-	//~ for(ite=0;T.table_transition[0].symbole_actuel[ite]!='\0';ite++) {}
+	//~ for(ite=0;I.transition[0].symbole_actuel[ite]!='\0';ite++) {}
 	
 	//~ printf("ite %d\n",ite);
 	//~ I.transition=malloc(sizeof(Transition)*NT+1);
 	//~ ce que ta fait I.transition[NT+1]=NULL;
-	//~ while(T.table_transition[y].!=NULL) nombre_transition++;
+	//~ while(I.transition[y].!=NULL) nombre_transition++;
 
 	int ite;
 	 int etat[NT+1];
 	 for(i=0;i<NT+1;i++) etat[i]=-1;
-	 etat[0]=T.table_transition[0].etat_actuel;
+	 etat[0]=I.transition[0].etat_actuel;
 	 printf("NT %d\n",NT);
-	 //remplir le tableau etat d'état le trier et l'écrire dans le fichier
+	 //remplir le tableau etat d'Ã©tat le trier et l'Ã©crire dans le fichier
 	 	 for(ite=0;ite<NT;ite++)
 	 	 {
-			 printf("etat_suivant %d\n",T.table_transition[ite].etat_suivant);
+			 printf("etat_suivant %d\n",I.transition[ite].etat_suivant);
 			  printf("ite %d\n",ite);
 
 			  for(i=0;i<NT+1;i++)
 			 {
-			 if(T.table_transition[ite].etat_suivant==etat[i])
+			 if(I.transition[ite].etat_suivant==etat[i])
 			 {
 				 //printf("ok");
 				 i=NT+1;
 			 }
 			 if(etat[i]==-1)
 			 {
-				 etat[i]=T.table_transition[ite].etat_suivant;
+				 etat[i]=I.transition[ite].etat_suivant;
 				 printf("i %d",i);
 				 				  printf(" etat %d\n",etat[i]);
-				  printf("etat_suivant_dans boucle %d\n",T.table_transition[ite].etat_suivant);
+				  printf("etat_suivant_dans boucle %d\n",I.transition[ite].etat_suivant);
 				 i=NT+1;
 				 
 
@@ -75,13 +76,13 @@ Info_machine conversion_donne_fichier(Info_machine I,T_machine T)
 	//for(i=0;i<NT+1;i++)  printf(" etat apres le tri %d\n",etat[i]);
 	
 	FILE* fichier = NULL;
-    fichier = fopen("test", "w");
+    fichier = fopen(path, "w");
     char c='\0';
     int j=0;
     while(etat[j]==-1) ++j;
     //printf(" j %d",j);
     
-    //ecriture de l'ensemble des états
+    //ecriture de l'ensemble des Ã©tats
     fputs("[",fichier);
     while(j<NT+1)
     {
@@ -97,12 +98,12 @@ Info_machine conversion_donne_fichier(Info_machine I,T_machine T)
     fputs("]",fichier);
     fputs("\n",fichier);
     
-    //ecriture de l'ensemble des caractéres de l'alphabets
+    //ecriture de l'ensemble des caractÃ©res de l'alphabets
     j=0;
     fputs("[",fichier);
     while(j<NC)
     {
-	fprintf(fichier,"%c",T.alphabet[j]);
+	fprintf(fichier,"%c",I.alphabet[j]);
 	if(j<NC-1) fputs(",",fichier);
     j++;
 	}
@@ -116,15 +117,15 @@ Info_machine conversion_donne_fichier(Info_machine I,T_machine T)
     {
 	fputs("/",fichier);	
 	fputs("|",fichier);	
-	fputs(T.table_transition[j].symbole_actuel,fichier);
+	fputs(I.transition[j].symbole_actuel,fichier);
 	fputs("|",fichier);	
-	fprintf(fichier,"%d",T.table_transition[j].etat_actuel);
+	fprintf(fichier,"%d",I.transition[j].etat_actuel);
 	fputs("|",fichier);	
-	fprintf(fichier,"%d",T.table_transition[j].etat_suivant);
+	fprintf(fichier,"%d",I.transition[j].etat_suivant);
 	fputs("|",fichier);	
-	fputs(T.table_transition[j].symbole_suivant,fichier);
+	fputs(I.transition[j].symbole_suivant,fichier);
 	fputs("|",fichier);	
-	fputs(T.table_transition[j].direction,fichier);
+	fputs(I.transition[j].direction,fichier);
 	fputs("|",fichier);	
 	fputs("/",fichier);	
 	fputs("\n",fichier);
@@ -133,5 +134,6 @@ Info_machine conversion_donne_fichier(Info_machine I,T_machine T)
 	 	fclose(fichier);
 	 	for(i=0;i<NT+1;i++) 
 	 	printf(" %d etat a la fin de la boucle \n", etat[i]);
-	return I;
+
 }
+

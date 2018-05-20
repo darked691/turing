@@ -6,6 +6,7 @@
 #include "save_fichier.h"
 #include "gestionnaire_erreur.h"
 #include "simulateur.h"
+#include "interface.h"
 int main(int argc, char **argv)
 {
 	/* Initialisation de GTK+. Sera fait plus tôt dans le programme final ! */
@@ -48,5 +49,11 @@ T=fill_alphabet(T);
 
 //~ fermeture_log(fichier[0],fichier[1],fichier[2]);
 
+	//~ gtk_init(&argc, &argv);
+	
+	//~ in_ecran_nouvelle_machine();
+	
+	//~ gtk_main();
+	return 0;
 
 }

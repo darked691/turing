@@ -27,11 +27,11 @@ LDFLAGS = $(ERROR_FLAGS) $(TFLAGS) $(GLIB_LDFLAGS) $(PANGO_LDFLAGS) $(GTK_LDFLAG
 
 all: gestionnaire
 
-gestionnaire: charger_fichier.o verifier_format.o ecriture_log.o save_fichier.o gestionnaire_erreur.o simulateur.o main.o 
-	gcc $(LDFLAGS) -o  gestionnaire  charger_fichier.o verifier_format.o ecriture_log.o save_fichier.o  gestionnaire_erreur.o simulateur.o main.o 
+gestionnaire: charger_fichier.o verifier_format.o ecriture_log.o save_fichier.o gestionnaire_erreur.o simulateur.o interface.o main.o 
+	gcc $(LDFLAGS) -o  gestionnaire  charger_fichier.o verifier_format.o ecriture_log.o save_fichier.o  gestionnaire_erreur.o simulateur.o interface.o main.o 
 
 
-main.o: main.c charger_fichier.h verifier_format.h ecriture_log.h save_fichier.h gestionnaire_erreur.h simulateur.h
+main.o: main.c charger_fichier.h verifier_format.h ecriture_log.h save_fichier.h gestionnaire_erreur.h simulateur.h interface.h
 	gcc $(LDFLAGS) -o main.o -c main.c -lm 
 
 charger_fichier.o: charger_fichier.c
@@ -51,7 +51,10 @@ gestionnaire_erreur.o: gestionnaire_erreur.c
 
 simulateur.o: simulateur.c
 		gcc $(LDFLAGS)   -o simulateur.o -c simulateur.c
-
+		
+interface.o:interface.c		
+		gcc $(LDFLAGS)   -o interface.o -c interface.c
+			
 clean:
 	rm -rf *.o
 

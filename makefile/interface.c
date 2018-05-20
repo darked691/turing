@@ -2,7 +2,7 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
-#include "in_nouvelle_machine.h"
+#include "interface.h"
 #define NBR_TRANSITION 1024												//Nombre de transition max autorisées
 //remember : mettre les mots dans string[NR]
 
@@ -387,14 +387,3 @@ void in_ecran_nouvelle_machine()
 	//gtk_exit(0);
 	
 }
-
-int main(int argc, char** argv)
-{
-	gtk_init(&argc, &argv);
-	
-	in_ecran_nouvelle_machine();
-	
-	gtk_main();
-	return 0;
-}
-
