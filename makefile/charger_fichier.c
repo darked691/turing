@@ -6,6 +6,7 @@
 #include <math.h>
 #include <string.h>
 #include "definition.h"
+#include "charger_fichier.h"
 
 void init_NC_(char* path)
 {
