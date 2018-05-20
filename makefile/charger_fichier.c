@@ -353,11 +353,11 @@ T_machine fill_matrice_t(T_machine T)
 	//calcule de la taille maximal du pointeur matrice de transition
 		while(puissance!=NR) {puissance++; alloc=alloc*NC;}
 
-		if(NR==3)
-		alloc=alloc+NC*NC+NC;
-	   else if(NR==2)
-	   alloc=alloc+NC;
-
+		//~ if(NR==3)
+		//~ alloc=alloc+NC*NC+NC;
+	   //~ else if(NR==2)
+	   //~ alloc=alloc+NC;
+		printf("alloca %d\n",alloc);
 	
 	T.matrice_transition=malloc(NE+2*sizeof(Transition));
 	
@@ -454,7 +454,7 @@ T_machine fill_matrice_t(T_machine T)
 							printf("resultat 2er boucle %d\n",resultat);
 							resultat=resultat*k;
 							numero_indice_matrice=numero_indice_matrice+resultat;
-							printf("numero 2er boucle %d\n",numero_indice_matrice);
+
 							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
 							printf("mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 						}
