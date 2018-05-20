@@ -450,7 +450,8 @@ T_machine fill_matrice_t(T_machine T)
 						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
-							while(puissance!=NR) {puissance++; resultat=resultat*NC;}
+							resultat=resultat*NC;
+							printf("resultat 2er boucle %d\n",resultat);
 							resultat=resultat*k;
 							numero_indice_matrice=numero_indice_matrice+resultat;
 							printf("numero 2er boucle %d\n",numero_indice_matrice);
@@ -511,11 +512,14 @@ T_machine fill_matrice_t(T_machine T)
 						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
-							while(puissance!=NR-1) {resultat=resultat*NC; puissance++; }
+							resultat=resultat*NC;
+							printf("resultat 2er boucle %d\n",resultat);
+							printf("k 2er boucle %d\n",k);
+							printf("numero_indice_matrice 2er boucle %d\n",numero_indice_matrice);
+							resultat=resultat*k;
 							
 							printf("%c",T.alphabet[k]);
-							
-							resultat=resultat*k;
+
 							numero_indice_matrice=numero_indice_matrice+resultat;
 							printf("\n nnumero 2er boucle %d\n",numero_indice_matrice);
 						}
@@ -529,7 +533,7 @@ T_machine fill_matrice_t(T_machine T)
 						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[2])
 						{
  
-							while(puissance!=NR) {puissance++; resultat=resultat*NC;}
+							while(puissance!=NR-1) {puissance++; resultat=resultat*NC;}
 							//resultat=resultat*resultat;
 							resultat=resultat*k;
 							printf("%c \n",T.alphabet[k]);
