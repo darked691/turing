@@ -24,7 +24,7 @@ void init_NC_()
             {
 				NC++;		
             }
-            // On continue tant que fgetc n'a pas retourné EOF (fin de fichier)
+            // On continue tant que fgetc n'a pas retournÃ© EOF (fin de fichier)
         }while (c != ']'); 
 			NC++;
         fclose(fichier);
@@ -333,7 +333,8 @@ T_machine fill_transition(T_machine T)
 
 	fclose(fichier);
 	return T;
-} 
+}   
+
 //fonction qui rempli la matrice de transition
 T_machine fill_matrice_t(T_machine T)
 {
@@ -345,11 +346,11 @@ T_machine fill_matrice_t(T_machine T)
 	//calcule de la taille maximal du pointeur matrice de transition
 		while(puissance!=NR) {puissance++; alloc=alloc*NC;}
 
-		//~ if(NR==3)
-		//~ alloc=alloc+NC*NC+NC;
-	   //~ else if(NR==2)
-	   //~ alloc=alloc+NC;
-		printf("alloca %d\n",alloc);
+		if(NR==3)
+		alloc=alloc+NC*NC+NC;
+	   else if(NR==2)
+	   alloc=alloc+NC;
+
 	
 	T.matrice_transition=malloc(NE+2*sizeof(Transition));
 	
@@ -368,8 +369,8 @@ T_machine fill_matrice_t(T_machine T)
 	i=0;
 	int k=0;
 
-	//on dissocie les cas ou le nombre de ruban est égale à 1,2,3
-	//selon les cas on remplie la matrice de transition différement 
+	//on dissocie les cas ou le nombre de ruban est Ã©gale Ã  1,2,3
+	//selon les cas on remplie la matrice de transition diffÃ©rement 
 	//pour le cas 1, on cherche pour chaque transition dans la table de transition la place du caractere "symbole actuel[0]" dans le tableau alphabet
 	// qui contient tout les symboles de l'alphabet
 	if(NR==1)
@@ -442,11 +443,10 @@ T_machine fill_matrice_t(T_machine T)
 						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
-							resultat=resultat*NC;
-
-							resultat=resultat*k;
+							while(puissance!=NR) {puissance++; resultat=resultat*k;}
+							
 							numero_indice_matrice=numero_indice_matrice+resultat;
-
+							printf("numero 2er boucle %d\n",numero_indice_matrice);
 							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
 							printf("mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 						}
@@ -504,12 +504,11 @@ T_machine fill_matrice_t(T_machine T)
 						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
-							resultat=resultat*NC;
-
-							resultat=resultat*k;
+							while(puissance!=NR-1) {resultat=resultat*k; puissance++; }
 							
 							printf("%c",T.alphabet[k]);
-
+							
+							
 							numero_indice_matrice=numero_indice_matrice+resultat;
 							printf("\n nnumero 2er boucle %d\n",numero_indice_matrice);
 						}
@@ -523,9 +522,9 @@ T_machine fill_matrice_t(T_machine T)
 						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[2])
 						{
  
-							while(puissance!=NR-1) {puissance++; resultat=resultat*NC;}
+							while(puissance!=NR) {puissance++; resultat=resultat*k;}
 							//resultat=resultat*resultat;
-							resultat=resultat*k;
+							
 							printf("%c \n",T.alphabet[k]);
 							
 							numero_indice_matrice=numero_indice_matrice+resultat;
@@ -547,10 +546,6 @@ T_machine fill_matrice_t(T_machine T)
 	return T;
 }
 
-
-
-
-	
 void liberation_de_la_memoire(T_machine T,Info_machine I)
 {
 
@@ -563,5 +558,5 @@ void liberation_de_la_memoire(T_machine T,Info_machine I)
 //free(T.table_transition->symbole_actuel);
 //free(T.table_transition->symbole_suivant);
 //free(T.table_transition);
-//free(T.alpabet);
+//free(T.alphabet);
 }
