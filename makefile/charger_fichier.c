@@ -207,6 +207,9 @@ return T;
 
 T_machine fill_transition(T_machine T,char* path)
 {
+	T.rubans =malloc(sizeof(Ruban)*1024);
+	int v=0;
+	for(v=0;v<1024;v++) T.rubans[v]=malloc(sizeof(Ruban)*3);
 	FILE* fichier = NULL;
     fichier = fopen(path, "r");
     char c='\0';
