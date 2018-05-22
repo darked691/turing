@@ -31,21 +31,21 @@ T=charger_fichier(T,"fichier");
 
  //~ I=conversion_donne_fichier(I,T);
  //~ T=fill_matrice_t(T);
- //~ int a=0;
- //~ int position_texte_et_nombre_page[2];
- //~ position_texte_et_nombre_page[0]=900;
- //~ position_texte_et_nombre_page[1]=790;
- //~ position_texte_et_nombre_page[2]=1;
- //~ printf("%s\n",T.table_transition[3].symbole_actuel);
- //~ FILE** fichier;
- //~ fichier=creation_log_latex();
-//~ while(a!=200) 
-//~ {
-//~ ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte_et_nombre_page);
-//~ a++;
-//~ }
+ int a=0;
+ int position_texte[2];
+ position_texte[0]=900;
+ position_texte[1]=790;
+ position_texte[2]=1;
+ printf("%s\n",T.table_transition[2].direction);
+ FILE** fichier;
+ fichier=creation_log_latex();
+while(a!=200) 
+{
+ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte,1);
+a++;
+}
 
-//~ fermeture_log(fichier[0],fichier[1],fichier[2]);
+fermeture_log(fichier[0],fichier[1],fichier[2]);
 
 	//~ gtk_init(&argc, &argv);
 	

@@ -233,7 +233,7 @@ T_machine fill_transition(T_machine T,char* path)
 		
 			i=0;
 		
-		while(i!=NC-1 && c!='|')
+		while( c!='|')
 		{
 		
 			T.table_transition[j].symbole_actuel[i]=c;
@@ -247,7 +247,7 @@ T_machine fill_transition(T_machine T,char* path)
 			c=fgetc(fichier);
 			
 		}
-	 
+	 	T.table_transition[j].symbole_actuel[NR]='\0';
 	c=fgetc(fichier);
 		
 	i=0;
@@ -288,7 +288,7 @@ T_machine fill_transition(T_machine T,char* path)
 	
 	i=0;
 	
-	    while(i!=NC-1 && c!='|')
+	    while(c!='|')
 	    {
 			T.table_transition[j].symbole_suivant[i]=c;
 		
@@ -301,10 +301,11 @@ T_machine fill_transition(T_machine T,char* path)
 			c=fgetc(fichier);
 		
 		}
+		T.table_transition[j].symbole_suivant[NR]='\0';
 	c=fgetc(fichier);
 	i=0;
 	
-	while(i!=NC-1 && c!='|')
+	while(c!='|')
 	{
 		T.table_transition[j].direction[i]=c;
 	
@@ -316,6 +317,7 @@ T_machine fill_transition(T_machine T,char* path)
 
 		c=fgetc(fichier);
 	}
+	T.table_transition[j].direction[NR]='\0';
 	c=fgetc(fichier);
 
 	while(c!=10) {c=fgetc(fichier); }

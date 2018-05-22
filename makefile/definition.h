@@ -14,6 +14,7 @@ int NR;
 int NE;
 int EF; //Etat final
 char** mot_a_lire;
+int position_texte[2];
 
 typedef struct Ruban
 {
