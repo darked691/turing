@@ -66,16 +66,19 @@ Ruban* ajouter_fin(Ruban* r, char symbole) //Ajoute une case au ruban (avant la 
 	Ruban* new = malloc(sizeof(Ruban));
 	new->valeur = symbole;
 	
-	Ruban* tmp = r;
+	Ruban* tmp = malloc(sizeof(Ruban));
+	tmp = r;
+	
 	while(tmp->droite->droite != NULL)
 	{
 		tmp = tmp->droite;
 	}
-	tmp->droite->gauche = new;
-	tmp->gauche->droite = new;
-	new->gauche = tmp->gauche;
-	new->droite =tmp;
 	
+	new->droite = tmp->droite;
+    new->gauche = tmp;
+    tmp->droite->gauche = new;
+	tmp->droite = new;
+
 	return r;
 }
 
@@ -86,15 +89,14 @@ Ruban* init_vide(Ruban* r, char* A) //Initialise un ruban vide (deux case conten
 	Ruban* tmp2 = malloc(sizeof(Ruban));
 	if(tmp == NULL)
 	{
-		printf("TMP VAUT NULL");
+		printf("TMP VAUT NULL\n");
 	}
 	if(tmp2 == NULL)
 	{
-		printf("TMP2 VAUT NULL");
+		printf("TMP2 VAUT NULL\n");
 	}
-	
-	tmp->valeur = A[0];
-	tmp2->valeur = A[0];
+	tmp->valeur = A[NC -1];
+	tmp2->valeur = A[NC -1];
 	
 	tmp->droite = tmp2;
 	tmp->gauche = NULL;
@@ -168,12 +170,12 @@ int mdt_Transition(T_machine *T)
 		
 		if (T->table_transition[trans].direction[i] == 'd') //Si on va a droite
 		{
-			T->rubans[i] = ajouter_case(T->rubans[i], T->alphabet[0], 'd');
+			T->rubans[i] = ajouter_case(T->rubans[i], T->alphabet[NC -1], 'd');
 			T->rubans[i] = T->rubans[i]->droite;
 		}
 		if (T->table_transition[trans].direction[i] == 'g') //Si on va a gauche
 		{
-			T->rubans[i] = ajouter_case(T->rubans[i], T->alphabet[0], 'g');
+			T->rubans[i] = ajouter_case(T->rubans[i], T->alphabet[NC -1], 'g');
 			T->rubans[i] = T->rubans[i]->gauche;
 		}
 		if (T->table_transition[trans].direction[i] == 'c') //Si on ne bouge pas
