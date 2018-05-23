@@ -54,6 +54,7 @@ simulateur.o: simulateur.c
 		
 interface.o:interface.c		
 		gcc $(LDFLAGS)   -o interface.o -c interface.c
+		
 			
 clean:
 	rm -rf *.o

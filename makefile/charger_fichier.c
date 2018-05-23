@@ -200,6 +200,7 @@ T_machine fill_alphabet(T_machine T,char* path)
             
         }while (c != ']');
         T.alphabet[NC]='\0';
+
      }    
   fclose(fichier);
 
@@ -337,6 +338,7 @@ T_machine fill_transition(T_machine T,char* path)
 	 	 j++;
 }
 }
+        EF=T.table_transition[NT-1].etat_suivant;
 
 	fclose(fichier);
 	return T;

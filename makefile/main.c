@@ -52,8 +52,8 @@ fermeture_log(fichier[0],fichier[1],fichier[2]);
 //~ int r=0;
 //~ for(r=0;r<NC;r++)
 //~ printf(" %c",T.alphabet[r]);
-
-//printf(" %d",NC);
+printf("%d\n",T.table_transition[NT-1].etat_suivant);
+printf(" %d",EF);
 	//~ gtk_init(&argc, &argv);
 	
 	//~ in_ecran_nouvelle_machine();
