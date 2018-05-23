@@ -55,7 +55,9 @@ int test_alpha(char symbole, char* A) //Teste si le symbole donné est dans l'al
 			return 1;
 		}
 	}
-	// err_carac_indefini();
+	//format : [etat][caractère]
+	//Attention, semble causer des segfault une fois sur huit ..?
+	//err_caractere_indefini("[12][2]");
 	return 0;
 }
 
@@ -79,8 +81,17 @@ Ruban* ajouter_fin(Ruban* r, char symbole) //Ajoute une case au ruban (avant la 
 
 Ruban* init_vide(Ruban* r, char* A) //Initialise un ruban vide (deux case contenant le caractère vide
 {
+	printf("j'entre dans init_vide\n");
 	Ruban* tmp = malloc(sizeof(Ruban));
 	Ruban* tmp2 = malloc(sizeof(Ruban));
+	if(tmp == NULL)
+	{
+		printf("TMP VAUT NULL");
+	}
+	if(tmp2 == NULL)
+	{
+		printf("TMP2 VAUT NULL");
+	}
 	
 	tmp->valeur = A[0];
 	tmp2->valeur = A[0];
@@ -107,7 +118,10 @@ int mdt_Initialisation(T_machine* T) //Initialise les rubans avec le mot recu en
 			{
 				ajouter_fin(T->rubans[i],mot_a_lire[i][j]);
 			}
-			else return 0; //Le symbole n'est pas dans l'alphabet Echec de l'initialisation
+			else 
+			{
+				return 0; //Le symbole n'est pas dans l'alphabet Echec de l'initialisation
+			}
 			j++;
 		}
 	}
