@@ -3,7 +3,7 @@
 #define H_GL_CHECK
 
 
-int verifier_transition_non_vide();
-int verifier_format_etat_alphabet();
-int verifier_format_transition_ruban();
+int verifier_transition_non_vide(char* path);
+int verifier_format_etat_alphabet(char* path);
+int verifier_format_transition_ruban(char* path);
 #endif

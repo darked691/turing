@@ -608,10 +608,15 @@ void liberation_de_la_memoire(T_machine T,Info_machine I)
 
 T_machine charger_fichier(T_machine T,char* path)
 {
+	if(verifier_transition_non_vide(path)==1)
+	{
 	init_NC_(path);
 	init_NE(path);
 	init_NR(path);
 	init_NT(path);	
+	}
+	verifier_format_etat_alphabet(path);
+	verifier_format_transition_ruban(path);
 	T=fill_alphabet(T,path);
 	T=fill_transition(T,path);
 	T=fill_matrice_t(T);

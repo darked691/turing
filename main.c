@@ -20,7 +20,7 @@ Info_machine I;
 
 
 
-if(verifier_transition_non_vide()==1)
+
 T=charger_fichier(T,"fichier");
 
 //printf("%dNE \n",NE);
