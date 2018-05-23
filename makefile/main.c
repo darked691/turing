@@ -49,12 +49,15 @@ T = charger_fichier(T, "fichier");
 //~ }
 
 //~ fermeture_log(fichier[0],fichier[1],fichier[2]);
+//~ int r=0;
+//~ for(r=0;r<NC;r++)
+//~ printf(" %c",T.alphabet[r]);
 
-	gtk_init(&argc, &argv);
+	//~ gtk_init(&argc, &argv);
 	
-	in_ecran_nouvelle_machine();
+	//~ in_ecran_nouvelle_machine();
 	
-	gtk_main();
+	//~ gtk_main();
 	return 0;
 
 }

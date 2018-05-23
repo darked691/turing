@@ -199,6 +199,7 @@ T_machine fill_alphabet(T_machine T,char* path)
             c= fgetc(fichier);
             
         }while (c != ']');
+        T.alphabet[NC]='\0';
      }    
   fclose(fichier);
 
