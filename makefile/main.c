@@ -32,27 +32,28 @@ T = charger_fichier(T, "fichier");
 //~ T=fill_alphabet(T);
  //~ T=fill_transition(T);
 
- //~ I=conversion_donne_fichier(I,T);
+  //~ conversion_donne_fichier("fichier",I);
  //~ T=fill_matrice_t(T);
- //~ int a=0;
- //~ int position_texte_et_nombre_page[2];
- //~ position_texte_et_nombre_page[0]=900;
- //~ position_texte_et_nombre_page[1]=790;
- //~ position_texte_et_nombre_page[2]=1;
- //~ printf("%s\n",T.table_transition[3].symbole_actuel);
- //~ FILE** fichier;
- //~ fichier=creation_log_latex();
-//~ while(a!=200) 
-//~ {
-//~ ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte_et_nombre_page);
-//~ a++;
-//~ }
+ int a=0;
+ int position_texte_et_nombre_page[2];
+ position_texte_et_nombre_page[0]=900;
+ position_texte_et_nombre_page[1]=790;
+ position_texte_et_nombre_page[2]=1;
+ printf("%s\n",T.table_transition[3].symbole_actuel);
+ FILE** fichier;
+ fichier=creation_log_latex();
+while(a!=200) 
+{
+ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte_et_nombre_page,2);
+a++;
+}
 
-//~ fermeture_log(fichier[0],fichier[1],fichier[2]);
+fermeture_log(fichier[0],fichier[1],fichier[2]);
 //~ int r=0;
 //~ for(r=0;r<NC;r++)
 //~ printf(" %c",T.alphabet[r]);
 
+//printf(" %d",NC);
 	//~ gtk_init(&argc, &argv);
 	
 	//~ in_ecran_nouvelle_machine();

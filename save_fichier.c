@@ -6,7 +6,7 @@ void tri_a_bulle_c(int *t,int n){
 
     while(test){
 
-        test = FALSE;
+        test = 0;
 
         for(j =0; j < n-1; j++){
 
@@ -16,7 +16,7 @@ void tri_a_bulle_c(int *t,int n){
 
                     t[j+1] = t[j];t[j] = tmp;
 
-                    test = TRUE;
+                    test = 1;
 
             }
 
