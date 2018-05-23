@@ -6,12 +6,13 @@
 #include <math.h>
 #include <string.h>
 #include "definition.h"
+#include "charger_fichier.h"
 
-void init_NC_()
+void init_NC_(char* path)
 {
 	NC=0;
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
 	int i=0;
 	char c = '\0'; 
     if (fichier != NULL)
@@ -30,10 +31,45 @@ void init_NC_()
         fclose(fichier);
 	}		
 }
-void init_NE()
+void init_EF(char* path)
 {	
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
+	int i=0;
+	int j=0;
+	char c = '\0'; 
+	
+    if (fichier != NULL)
+    {
+		while(c != '[') c=fgetc(fichier);
+		
+		c=fgetc(fichier);
+		
+		while(c!=']')
+		{
+			
+			if(i==0) j++;
+			
+			if(j==NE)
+			{
+				//printf("%c le nombre \n",c);
+				EF=c - '0';
+			}	
+			
+			c=fgetc(fichier);
+		
+			i++;
+		 
+			i=i%2;		
+		}
+		
+        fclose(fichier);
+	}		
+}
+void init_NE(char* path)
+{	
+	FILE* fichier = NULL;
+    fichier = fopen(path, "r");
 	int i=0;
 	char c = '\0'; 
 	NE=0;
@@ -57,10 +93,12 @@ void init_NE()
         fclose(fichier);
 	}		
 }	
-void init_NT(T_machine T){
+
+void init_NT(char* path)
+{
 
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
 	int i=0;
 	char c = '\0';
 	int nb_ligne=0; 
@@ -85,28 +123,19 @@ void init_NT(T_machine T){
 		c=fgetc(fichier);
 		if(c=='\n')
 		nb_ligne++;
-		
-		//~ if(verifie_ligne_vide==1 && c!='/')
-		//~ {
-			 //~ printf("erreur format : symbole_vide\n");
-			 //~ nb_ligne--;
-			 //~ break;
-		//~ }
-		//~ if(c=='\n') verifie_ligne_vide++;
-		//~ else
-		//~ verifie_ligne_vide=0;
 	}
 	NT=nb_ligne;
     fclose(fichier);
 	}
 }
 
-void init_NR(T_machine T){
+void init_NR(char* path)
+{
 	
 	
 	FILE* fic = NULL;
 	
-    fic = fopen("fichier", "r");
+    fic = fopen(path, "r");
     
     char symbole_actuel[3];
     
@@ -165,10 +194,10 @@ void init_NR(T_machine T){
 	}
 }
 
-T_machine fill_alphabet(T_machine T)
+T_machine fill_alphabet(T_machine T,char* path)
 {
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
     char c='\0';
     int position_virgule_fichier=0;
     int position_fichier=0;
@@ -182,7 +211,7 @@ T_machine fill_alphabet(T_machine T)
     
 		c= fgetc(fichier);
 
-		T.alpabet=malloc(sizeof(char)*NC);
+		T.alphabet=malloc(sizeof(char)*NC);
 		position_virgule_fichier=0;
          do
          { 
@@ -192,7 +221,7 @@ T_machine fill_alphabet(T_machine T)
 			
 			position_tableau_alphabet=position_fichier/2;
 			
-			T.alpabet[position_tableau_alphabet]=c;			
+			T.alphabet[position_tableau_alphabet]=c;			
        
 			}	
 			position_virgule_fichier++;
@@ -209,10 +238,14 @@ T_machine fill_alphabet(T_machine T)
 
 return T;      
 }    
-T_machine fill_transition(T_machine T)
+
+T_machine fill_transition(T_machine T,char* path)
 {
+	T.rubans =malloc(sizeof(Ruban)*1024);
+	int v=0;
+	for(v=0;v<1024;v++) T.rubans[v]=malloc(sizeof(Ruban)*3);
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
     char c='\0';
     int j=0;
     int i=0;
@@ -237,7 +270,7 @@ T_machine fill_transition(T_machine T)
 		
 			i=0;
 		
-		while(i!=NC-1 && c!='|')
+		while( c!='|')
 		{
 		
 			T.table_transition[j].symbole_actuel[i]=c;
@@ -251,7 +284,7 @@ T_machine fill_transition(T_machine T)
 			c=fgetc(fichier);
 			
 		}
-	 
+	 	T.table_transition[j].symbole_actuel[NR]='\0';
 	c=fgetc(fichier);
 		
 	i=0;
@@ -292,7 +325,7 @@ T_machine fill_transition(T_machine T)
 	
 	i=0;
 	
-	    while(i!=NC-1 && c!='|')
+	    while(c!='|')
 	    {
 			T.table_transition[j].symbole_suivant[i]=c;
 		
@@ -305,10 +338,11 @@ T_machine fill_transition(T_machine T)
 			c=fgetc(fichier);
 		
 		}
+		T.table_transition[j].symbole_suivant[NR]='\0';
 	c=fgetc(fichier);
 	i=0;
 	
-	while(i!=NC-1 && c!='|')
+	while(c!='|')
 	{
 		T.table_transition[j].direction[i]=c;
 	
@@ -320,6 +354,7 @@ T_machine fill_transition(T_machine T)
 
 		c=fgetc(fichier);
 	}
+	T.table_transition[j].direction[NR]='\0';
 	c=fgetc(fichier);
 
 	while(c!=10) {c=fgetc(fichier); }
@@ -338,7 +373,7 @@ T_machine fill_transition(T_machine T)
 
 	fclose(fichier);
 	return T;
-}   
+} 
 //fonction qui rempli la matrice de transition
 T_machine fill_matrice_t(T_machine T)
 {
@@ -350,11 +385,11 @@ T_machine fill_matrice_t(T_machine T)
 	//calcule de la taille maximal du pointeur matrice de transition
 		while(puissance!=NR) {puissance++; alloc=alloc*NC;}
 
-		if(NR==3)
-		alloc=alloc+NC*NC+NC;
-	   else if(NR==2)
-	   alloc=alloc+NC;
-
+		//~ if(NR==3)
+		//~ alloc=alloc+NC*NC+NC;
+	   //~ else if(NR==2)
+	   //~ alloc=alloc+NC;
+		printf("alloca %d\n",alloc);
 	
 	T.matrice_transition=malloc(NE+2*sizeof(Transition));
 	
@@ -390,7 +425,7 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0] )
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[0] )
 						{
 
 							numero_indice_matrice=k;
@@ -428,7 +463,7 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
 						{
 							
 							numero_indice_matrice=k;
@@ -444,13 +479,14 @@ T_machine fill_matrice_t(T_machine T)
 					
 					for(k=0;k<NC;k++){
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
-							while(puissance!=NR) {puissance++; resultat=resultat*k;}
-							
+							resultat=resultat*NC;
+
+							resultat=resultat*k;
 							numero_indice_matrice=numero_indice_matrice+resultat;
-							printf("numero 2er boucle %d\n",numero_indice_matrice);
+
 							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
 							printf("mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 						}
@@ -489,9 +525,9 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
 						{
-							printf("%c",T.alpabet[k]);
+							printf("%c",T.alphabet[k]);
 							numero_indice_matrice=k;
 							printf("numero 1er boucle %d\n",numero_indice_matrice);
 						
@@ -505,14 +541,15 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[1])
 						{
 
-							while(puissance!=NR-1) {resultat=resultat*k; puissance++; }
+							resultat=resultat*NC;
+
+							resultat=resultat*k;
 							
-							printf("%c",T.alpabet[k]);
-							
-							
+							printf("%c",T.alphabet[k]);
+
 							numero_indice_matrice=numero_indice_matrice+resultat;
 							printf("\n nnumero 2er boucle %d\n",numero_indice_matrice);
 						}
@@ -523,13 +560,13 @@ T_machine fill_matrice_t(T_machine T)
 					for(k=0;k<NC;k++)
 					{
 					
-						if(T.alpabet[k]==T.table_transition[numero_transition].symbole_actuel[2])
+						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[2])
 						{
  
-							while(puissance!=NR) {puissance++; resultat=resultat*k;}
+							while(puissance!=NR-1) {puissance++; resultat=resultat*NC;}
 							//resultat=resultat*resultat;
-							
-							printf("%c \n",T.alpabet[k]);
+							resultat=resultat*k;
+							printf("%c \n",T.alphabet[k]);
 							
 							numero_indice_matrice=numero_indice_matrice+resultat;
 							printf("\n numero 3er boucle %d\n",numero_indice_matrice);
@@ -568,3 +605,17 @@ void liberation_de_la_memoire(T_machine T,Info_machine I)
 //free(T.table_transition);
 //free(T.alpabet);
 }
+
+T_machine charger_fichier(T_machine T,char* path)
+{
+	init_NC_(path);
+	init_NE(path);
+	init_NR(path);
+	init_NT(path);	
+	T=fill_alphabet(T,path);
+	T=fill_transition(T,path);
+	T=fill_matrice_t(T);
+	
+return T;	
+}
+	

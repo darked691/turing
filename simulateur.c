@@ -55,9 +55,7 @@ int test_alpha(char symbole, char* A) //Teste si le symbole donné est dans l'al
 			return 1;
 		}
 	}
-	//format : [etat][caractère]
-	//Attention, semble causer des segfault une fois sur huit ..?
-	//err_caractere_indefini("[12][2]");
+	// err_carac_indefini();
 	return 0;
 }
 
@@ -66,37 +64,26 @@ Ruban* ajouter_fin(Ruban* r, char symbole) //Ajoute une case au ruban (avant la 
 	Ruban* new = malloc(sizeof(Ruban));
 	new->valeur = symbole;
 	
-	Ruban* tmp = malloc(sizeof(Ruban));
-	tmp = r;
-	
+	Ruban* tmp = r;
 	while(tmp->droite->droite != NULL)
 	{
 		tmp = tmp->droite;
 	}
+	tmp->droite->gauche = new;
+	tmp->gauche->droite = new;
+	new->gauche = tmp->gauche;
+	new->droite =tmp;
 	
-	new->droite = tmp->droite;
-    new->gauche = tmp;
-    tmp->droite->gauche = new;
-	tmp->droite = new;
-
 	return r;
 }
 
 Ruban* init_vide(Ruban* r, char* A) //Initialise un ruban vide (deux case contenant le caractère vide
 {
-	printf("j'entre dans init_vide\n");
 	Ruban* tmp = malloc(sizeof(Ruban));
 	Ruban* tmp2 = malloc(sizeof(Ruban));
-	if(tmp == NULL)
-	{
-		printf("TMP VAUT NULL\n");
-	}
-	if(tmp2 == NULL)
-	{
-		printf("TMP2 VAUT NULL\n");
-	}
-	tmp->valeur = A[NC -1];
-	tmp2->valeur = A[NC -1];
+	
+	tmp->valeur = A[0];
+	tmp2->valeur = A[0];
 	
 	tmp->droite = tmp2;
 	tmp->gauche = NULL;
@@ -120,10 +107,7 @@ int mdt_Initialisation(T_machine* T) //Initialise les rubans avec le mot recu en
 			{
 				ajouter_fin(T->rubans[i],mot_a_lire[i][j]);
 			}
-			else 
-			{
-				return 0; //Le symbole n'est pas dans l'alphabet Echec de l'initialisation
-			}
+			else return 0; //Le symbole n'est pas dans l'alphabet Echec de l'initialisation
 			j++;
 		}
 	}
@@ -170,12 +154,12 @@ int mdt_Transition(T_machine *T)
 		
 		if (T->table_transition[trans].direction[i] == 'd') //Si on va a droite
 		{
-			T->rubans[i] = ajouter_case(T->rubans[i], T->alphabet[NC -1], 'd');
+			T->rubans[i] = ajouter_case(T->rubans[i], T->alphabet[0], 'd');
 			T->rubans[i] = T->rubans[i]->droite;
 		}
 		if (T->table_transition[trans].direction[i] == 'g') //Si on va a gauche
 		{
-			T->rubans[i] = ajouter_case(T->rubans[i], T->alphabet[NC -1], 'g');
+			T->rubans[i] = ajouter_case(T->rubans[i], T->alphabet[0], 'g');
 			T->rubans[i] = T->rubans[i]->gauche;
 		}
 		if (T->table_transition[trans].direction[i] == 'c') //Si on ne bouge pas

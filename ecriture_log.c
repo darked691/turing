@@ -33,7 +33,7 @@ fputs("100.00\n",fichier[1]);
 fputs("Single\n",fichier[1]);
 fputs("-2\n",fichier[1]);
 fputs("1200 2\n",fichier[1]);
-fputs("4 0 0 50 -1 0 12 0.0000 4 135 420 2475 900 ",fichier[1]);
+fputs("4 0 0 50 -1 0 12 0.0000 4 135 420 1400 0 ",fichier[1]);
 fputs("Transition effectue",fichier[1]);
 fputc(92,fichier[1]);
 fputs("001\n",fichier[1]);
@@ -53,19 +53,60 @@ fputs("(Transition effectue:) show\n",fichier[2]);
 return fichier;
 }	
 //écriture de la dernière transition effectué  contenue dans la variable "int derniere_transition"	pour chaque fichier
-void ecrire_log(T_machine T,FILE* fichier1,FILE* fichier2,FILE* fichier3,int *position_texte)
+void ecrire_log(T_machine T,FILE* fichier1,FILE* fichier2,FILE* fichier3,int *position_texte,int derniere_transition)
 {
 //fichier 1
 fputc(10,fichier1);
-fputs("Etat : ",fichier1);
-fprintf(fichier1,"%d",T.table_transition[2].etat_actuel);
+fputs("Etat actuel: ",fichier1);
+fprintf(fichier1,"%d ",T.table_transition[derniere_transition].etat_actuel);
+
+fputs("Etat suivant: ",fichier1);
+fprintf(fichier1,"%d ",T.table_transition[derniere_transition].etat_suivant);
+
+fputs("symbole actuel: ",fichier1);
+fprintf(fichier1,"%s ",T.table_transition[derniere_transition].symbole_actuel);
+
+fputs("symbole suivant: ",fichier1);
+fprintf(fichier1,"%s ",T.table_transition[derniere_transition].symbole_suivant);
+
+fputs("direction: ",fichier1);
+fputs(T.table_transition[derniere_transition].direction,fichier1);
+//fprintf(fichier1,"%s ",T.table_transition[2].direction);
 fputc(10,fichier1);
 //fichier 2
-fputs("4 0 0 50 -1 0 16 0.0000 4 135 420 2475",fichier2);
+fputs("4 0 0 50 -1 0 14 0.0000 4 135 1400 1000",fichier2);
 position_texte[0]=position_texte[0]+290;
 fprintf(fichier2," %d ",position_texte[0]);
-fputs("etat ",fichier2);
-fprintf(fichier2,"%d",T.table_transition[2].etat_actuel);
+fputs("Etat actuel ",fichier2);
+fprintf(fichier2,"%d",T.table_transition[derniere_transition].etat_actuel);
+fputc(92,fichier2);
+fputs("001\n",fichier2);
+
+fputs("4 0 0 50 -1 0 14 0.0000 4 135 1400 2300",fichier2);
+fprintf(fichier2," %d ",position_texte[0]);
+fputs("Etat suivant: ",fichier2);
+fprintf(fichier2,"%d ",T.table_transition[derniere_transition].etat_suivant);
+fputc(92,fichier2);
+fputs("001\n",fichier2);
+
+fputs("4 0 0 50 -1 0 14 0.0000 4 135 1400 3800",fichier2);
+fprintf(fichier2," %d ",position_texte[0]);
+fputs("symbole actuel: ",fichier2);
+fprintf(fichier2,"%s ",T.table_transition[derniere_transition].symbole_actuel);
+fputc(92,fichier2);
+fputs("001\n",fichier2);
+
+fputs("4 0 0 50 -1 0 14 0.0000 4 135 1400 5900",fichier2);
+fprintf(fichier2," %d ",position_texte[0]);
+fputs("symbole suivant: ",fichier2);
+fprintf(fichier2,"%s ",T.table_transition[derniere_transition].symbole_suivant);
+fputc(92,fichier2);
+fputs("001\n",fichier2);
+
+fputs("4 0 0 50 -1 0 14 0.0000 4 135 1400 8080",fichier2);
+fprintf(fichier2," %d ",position_texte[0]);
+fputs("direction: ",fichier2);
+fprintf(fichier2,"%s ",T.table_transition[derniere_transition].direction);
 fputc(92,fichier2);
 fputs("001\n",fichier2);
 
@@ -73,7 +114,39 @@ fputs("001\n",fichier2);
 fputs("100 ",fichier3);
 fprintf(fichier3,"%d",position_texte[1]);
 fputs(" 16 sub moveto\n",fichier3);
-fputs("(Etat 2) show\n",fichier3);
+//fputs("(Etat 2) show\n",fichier3);
+fputs("(Etat actuel:",fichier3);
+fprintf(fichier3,"%d",T.table_transition[2].etat_actuel);
+fputs(")show\n",fichier3);
+
+fputs("150 ",fichier3);
+fprintf(fichier3,"%d",position_texte[1]);
+fputs(" 16 sub moveto\n",fichier3);
+fputs("(Etat suivant:",fichier3);
+fprintf(fichier3,"%d",T.table_transition[2].etat_suivant);
+fputs(")show\n",fichier3);
+
+fputs("210 ",fichier3);
+fprintf(fichier3,"%d",position_texte[1]);
+fputs(" 16 sub moveto\n",fichier3);
+fputs("(symbole actuel:",fichier3);
+fprintf(fichier3,"%s",T.table_transition[2].symbole_actuel);
+fputs(")show\n",fichier3);
+
+fputs("290 ",fichier3);
+fprintf(fichier3,"%d",position_texte[1]);
+fputs(" 16 sub moveto\n",fichier3);
+fputs("(Symbole suivant:",fichier3);
+fprintf(fichier3,"%s",T.table_transition[2].symbole_suivant);
+fputs(")show\n",fichier3);
+
+fputs("370 ",fichier3);
+fprintf(fichier3,"%d",position_texte[1]);
+fputs(" 16 sub moveto\n",fichier3);
+fputs("(direction:",fichier3);
+fprintf(fichier3,"%s",T.table_transition[2].direction);
+fputs(")show\n",fichier3);
+
 position_texte[1]=position_texte[1]-10;
 if(position_texte[1]==30)
 {

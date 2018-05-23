@@ -12,11 +12,6 @@ int g_choice = -1;
 //On cast avec "GTK_WINDOW(nom_du_widget)"
 //On utilise des gchar* au lieu de char pour gtk.
 
-void close_error(GtkButton *button, GtkWidget *mainwindow)
-{
-	gtk_widget_destroy(mainwindow);
-}
-
 void equalone(GtkButton *button, gpointer value)
 {
 	int* result = value;
@@ -28,7 +23,7 @@ void equalzero(GtkButton *button, gpointer value)
 	g_choice = 0;
 }
 
-void err_affiche_message_ok(char* message)
+int err_affiche_message_ok(char* message)
 {
 	//Creation du "box" contenant tous nos widgets
 	GtkWidget* box = gtk_vbox_new(TRUE, 0);
@@ -47,7 +42,7 @@ void err_affiche_message_ok(char* message)
     gtk_window_set_default_size(GTK_WINDOW(mainWindow), LONGUEUR, LARGEUR);
     
     //Effaceur de la fenêtre
-    gtk_signal_connect (GTK_OBJECT(mainWindow), "delete_event", GTK_SIGNAL_FUNC(gtk_widget_destroy), mainWindow);
+    gtk_signal_connect (GTK_OBJECT(mainWindow), "delete_event", GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
     
     //titre de la fenêtre
 	gtk_window_set_title(GTK_WINDOW(mainWindow), "Erreur");
@@ -68,7 +63,7 @@ void err_affiche_message_ok(char* message)
 	buttonOk = gtk_button_new_with_label(g_locale_to_utf8("ok", -1, NULL, NULL, NULL));
 	
 	//Ajout d'une connexion au bouton "ok"
-	gtk_signal_connect(GTK_OBJECT(buttonOk), "released", G_CALLBACK(close_error), mainWindow);
+	gtk_signal_connect(GTK_OBJECT(buttonOk), "released", GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
 	
 	//Ajout du label dans le "box"
 	gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 1);
@@ -81,6 +76,8 @@ void err_affiche_message_ok(char* message)
 	
 	//Boucle évènementielle
 	gtk_main();
+	
+    return EXIT_SUCCESS;
 }
 
 int err_affiche_message_YN(char* message)
@@ -195,14 +192,8 @@ void err_caractere_indefini(char* code)
 	char* message = malloc(sizeof(char) * (strlen("<span foreground=\""COULEUR_ERREUR"\"><b>Erreur</b></span> : le caractère \"") + 1 + strlen("\" existe dans une transition à l'état ") + 4 + strlen(" mais est introuvable dans l'alphabet")));
 	
 	etat[0] = code[1];
-	if(code[2] != ']')
-	{
-		etat[1] = code[2];
-	}
-	if(code[2] != ']' && code[3] != ']')
-	{
-		etat[2] = code[3];
-	}
+	etat[1] = code[2];
+	etat[2] = code[3];
 	caractere[0] = code[strlen(code)-2];
 	
 	strcpy(message, "<span foreground=\""COULEUR_ERREUR"\"><b>Erreur</b></span> : le caractère \"");

@@ -22,14 +22,11 @@
 		GtkWidget* direction3;
 		GtkWidget* liste_etat_actuel;
 		GtkWidget* liste_etat_suivant;
-		GtkWidget* mot_ruban1;
-		GtkWidget* mot_ruban2;
-		GtkWidget* mot_ruban3;
 		
 	}Transition_widgets;
 
 	Info_machine G_IM;
-	Transition_widgets G_widgets;
+	Transition_widgets widgets;
 	int G_transition_actuelle;
 
 	//retire les caractères en double d'une chaine ( afin d'éviter les doublons dans l'alphabet )
@@ -47,9 +44,5 @@
 	
 	//Fenêtre regroupant toutes les opérations possible après création d'une nouvelle machine
 	void in_ecran_nouvelle_machine();
-	
-	T_machine charger_fichier(T_machine T,char* path);
-	int mdt_Initialisation(T_machine* T);
-	void conversion_donne_fichier(char* path, Info_machine I);
 #endif
 
