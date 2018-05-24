@@ -1,4 +1,5 @@
 #include "simulateur.h"
+#include "ecriture_log.h"
 int mdt_Hash(char* A, Ruban** R)
 {
 	int i,j,tmp,ER; // Soit i et j des indices , tmp une variable temporaire, ER l'état des rubans
@@ -26,7 +27,7 @@ une seconde vérification n'est donc pas nécessaire
 
 int mdt_Analyse_du_contexte(T_machine* T)
 {
-	//es_ecriture_log();
+	//ecrire_log(T);
 	T->etat_rubans = mdt_Hash(T->alphabet , T->rubans);
 	
 	if (T->matrice_transition[T->etat_courant][T->etat_rubans] == -1)

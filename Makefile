@@ -41,7 +41,7 @@ charger_fichier.o: charger_fichier.c charger_fichier.h
 	gcc -o charger_fichier.o -c charger_fichier.c -lm 
 	
 ecriture_log.o: ecriture_log.c
-	gcc -o ecriture_log.o -c ecriture_log.c -lm 
+	gcc -o ecriture_log.o -c ecriture_log.c -lm -g
 
 save_fichier.o: save_fichier.c
 	gcc -o save_fichier.o -c save_fichier.c -lm  

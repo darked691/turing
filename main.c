@@ -37,15 +37,15 @@ T=charger_fichier(T,"fichier");
  position_texte[1]=790;
  position_texte[2]=1;
  printf("%s\n",T.table_transition[2].direction);
- FILE** fichier;
- fichier=creation_log_latex();
+ 
+  creation_log_latex();
 while(a!=200) 
 {
-ecrire_log(T,fichier[0],fichier[1],fichier[2],position_texte,1);
+ ecrire_log(T);
 a++;
 }
 
-fermeture_log(fichier[0],fichier[1],fichier[2]);
+//~ fermeture_log(fichier[0],fichier[1],fichier[2]);
 
 	//~ gtk_init(&argc, &argv);
 	
