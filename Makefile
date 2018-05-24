@@ -27,19 +27,19 @@ LDFLAGS = $(ERROR_FLAGS) $(TFLAGS) $(GLIB_LDFLAGS) $(PANGO_LDFLAGS) $(GTK_LDFLAG
 
 all: gestionnaire
 
-gestionnaire: charger_fichier.o verifier_format.o ecriture_log.o save_fichier.o gestionnaire_erreur.o simulateur.o interface.o main.o 
-	gcc $(LDFLAGS) -o  gestionnaire  charger_fichier.o verifier_format.o ecriture_log.o save_fichier.o  gestionnaire_erreur.o simulateur.o interface.o main.o 
+gestionnaire:  verifier_format.o charger_fichier.o ecriture_log.o save_fichier.o gestionnaire_erreur.o simulateur.o interface.o main.o 
+	gcc $(LDFLAGS) -o  gestionnaire  verifier_format.o charger_fichier.o ecriture_log.o save_fichier.o  gestionnaire_erreur.o simulateur.o interface.o main.o 
 
 
-main.o: main.c charger_fichier.h verifier_format.h ecriture_log.h save_fichier.h gestionnaire_erreur.h simulateur.h interface.h
-	gcc $(LDFLAGS) -o main.o -c main.c -lm 
-
-charger_fichier.o: charger_fichier.c charger_fichier.h
-	gcc -o charger_fichier.o -c charger_fichier.c -lm  
+main.o: main.c  verifier_format.h charger_fichier.h ecriture_log.h save_fichier.h gestionnaire_erreur.h simulateur.h interface.h
+	gcc $(LDFLAGS) -o main.o -c main.c -lm  
 
 verifier_format.o: verifier_format.c
 	gcc $(LDFLAGS)  -o verifier_format.o -c verifier_format.c -lm  
 
+charger_fichier.o: charger_fichier.c charger_fichier.h
+	gcc -o charger_fichier.o -c charger_fichier.c -lm 
+	
 ecriture_log.o: ecriture_log.c
 	gcc -o ecriture_log.o -c ecriture_log.c -lm 
 
