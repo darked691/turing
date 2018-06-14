@@ -25,47 +25,13 @@ void init_NC_(char* path)
             {
 				NC++;		
             }
-            // On continue tant que fgetc n'a pas retourné EOF (fin de fichier)
+           
         }while (c != ']'); 
-			NC++;
+		NC++;
         fclose(fichier);
 	}		
 }
-void init_EF(char* path)
-{	
-	FILE* fichier = NULL;
-    fichier = fopen(path, "r");
-	int i=0;
-	int j=0;
-	char c = '\0'; 
-	
-    if (fichier != NULL)
-    {
-		while(c != '[') c=fgetc(fichier);
-		
-		c=fgetc(fichier);
-		
-		while(c!=']')
-		{
-			
-			if(i==0) j++;
-			
-			if(j==NE)
-			{
-				//printf("%c le nombre \n",c);
-				EF=c - '0';
-			}	
-			
-			c=fgetc(fichier);
-		
-			i++;
-		 
-			i=i%2;		
-		}
-		
-        fclose(fichier);
-	}		
-}
+
 void init_NE(char* path)
 {	
 	FILE* fichier = NULL;
@@ -194,6 +160,32 @@ void init_NR(char* path)
 	}
 }
 
+void init_EF(char* path)
+{	
+	FILE* fichier = NULL;
+    fichier = fopen(path, "r");
+	int i=0;
+	char c = '\0'; 
+    if (fichier != NULL)
+    {
+		while(c != '[') c=fgetc(fichier);
+		
+		c=fgetc(fichier);
+		
+		while(c!=']')
+		{
+			c=fgetc(fichier);
+			i++;
+			i=i%2;		
+		}
+
+		fseek(fichier, -2, SEEK_CUR);
+		c=fgetc(fichier);	
+		EF=atoi(&c);
+        fclose(fichier);
+	}
+}
+
 T_machine fill_alphabet(T_machine T,char* path)
 {
 	FILE* fichier = NULL;
@@ -262,11 +254,11 @@ T_machine fill_transition(T_machine T,char* path)
 
 		while(c!=EOF)
 		{
-			T.table_transition[j].direction=malloc(sizeof(char)*NR);
+			T.table_transition[j].direction=calloc(NR, sizeof(char));
 
-			T.table_transition[j].symbole_suivant=malloc(sizeof(char)*NR);
+			T.table_transition[j].symbole_suivant=calloc(NR, sizeof(char));
 		
-			T.table_transition[j].symbole_actuel=malloc(sizeof(char)*NR);
+			T.table_transition[j].symbole_actuel=calloc(NR, sizeof(char));
 		
 			i=0;
 		
@@ -274,10 +266,6 @@ T_machine fill_transition(T_machine T,char* path)
 		{
 		
 			T.table_transition[j].symbole_actuel[i]=c;
-		
-			printf(" symbole_actuel %c",T.table_transition[j].symbole_actuel[i]);
-			printf(" i %d",i);
-			printf(" j %d \n",j);
 			
 			i++;
 
@@ -293,11 +281,7 @@ T_machine fill_transition(T_machine T,char* path)
 	    {
 		
 			T.table_transition[j].etat_actuel= c - '0';
-			
-			printf(" etat_actuel %d",T.table_transition[j].etat_actuel);
-			printf(" i %d",i);
-			printf(" j %d \n",j);
-			
+
 			i++;
      
 			c=fgetc(fichier);
@@ -312,9 +296,9 @@ T_machine fill_transition(T_machine T,char* path)
 		{
 			T.table_transition[j].etat_suivant= c - '0';
 		
-			printf(" etat_suivant %d",T.table_transition[j].etat_suivant);
-			printf(" i %d",i);
-			printf(" j %d \n",j);
+			//printf(" etat_suivant %d",T.table_transition[j].etat_suivant);
+			//printf(" i %d",i);
+			//printf(" j %d \n",j);
 		
 			i++;
 
@@ -329,9 +313,9 @@ T_machine fill_transition(T_machine T,char* path)
 	    {
 			T.table_transition[j].symbole_suivant[i]=c;
 		
-			printf(" symbole_suivant %c ",T.table_transition[j].symbole_suivant[i]);
-			printf("%d i ",i);
-			printf("%d j \n",j);
+			//printf(" symbole_suivant %c ",T.table_transition[j].symbole_suivant[i]);
+			//printf("%d i ",i);
+			//printf("%d j \n",j);
 		
 			i++;
 
@@ -346,9 +330,9 @@ T_machine fill_transition(T_machine T,char* path)
 	{
 		T.table_transition[j].direction[i]=c;
 	
-		printf(" direction %c",T.table_transition[j].direction[i]);
-		printf(" i %d",i);
-		printf(" j %d \n",j);
+		//printf(" direction %c",T.table_transition[j].direction[i]);
+		//printf(" i %d",i);
+		//printf(" j %d \n",j);
     
 		i++;
 
@@ -361,16 +345,15 @@ T_machine fill_transition(T_machine T,char* path)
 	
 	c=fgetc(fichier);
 	
-	printf("%c end\n",c);
+	//printf("%c end\n",c);
 
 	if(j==NT-1) break;
 	c=fgetc(fichier);
 	c=fgetc(fichier); 
 
 	 	 j++;
+	}
 }
-}
-
 	fclose(fichier);
 	return T;
 } 
@@ -379,9 +362,9 @@ T_machine fill_matrice_t(T_machine T)
 {
 
 	int resultat=1;
-	
 	int puissance=0;
 	int alloc=1;
+	
 	//calcule de la taille maximal du pointeur matrice de transition
 		while(puissance!=NR) {puissance++; alloc=alloc*NC;}
 
@@ -389,7 +372,7 @@ T_machine fill_matrice_t(T_machine T)
 		//~ alloc=alloc+NC*NC+NC;
 	   //~ else if(NR==2)
 	   //~ alloc=alloc+NC;
-		printf("alloca %d\n",alloc);
+		//printf("alloca %d\n",alloc);
 	
 	T.matrice_transition=malloc(NE+2*sizeof(Transition));
 	
@@ -419,7 +402,7 @@ T_machine fill_matrice_t(T_machine T)
 		for(numero_transition=0;numero_transition<NT;numero_transition++){
 			if(T.table_transition[numero_transition].etat_actuel==i )
 			{
-				printf("symbole_actuel %s \n",T.table_transition[numero_transition].symbole_actuel);
+				//printf("symbole_actuel %s \n",T.table_transition[numero_transition].symbole_actuel);
 
 
 					for(k=0;k<NC;k++)
@@ -430,14 +413,14 @@ T_machine fill_matrice_t(T_machine T)
 
 							numero_indice_matrice=k;
 							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
-							printf("numero 1er boucle %d\n",numero_indice_matrice);
-							printf("mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
+							//printf("numero 1er boucle %d\n",numero_indice_matrice);
+							//printf("mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 						}
 					}
 
-				printf("i %d\n",i);
+				//printf("i %d\n",i);
 
-				printf("---------------------\n");
+				//printf("---------------------\n");
 			
 		}
 		}
@@ -459,7 +442,7 @@ T_machine fill_matrice_t(T_machine T)
 			{
 				
 
-				printf("symbole_actuel %s \n",T.table_transition[numero_transition].symbole_actuel);
+				//printf("symbole_actuel %s \n",T.table_transition[numero_transition].symbole_actuel);
 					for(k=0;k<NC;k++)
 					{
 					
@@ -467,7 +450,7 @@ T_machine fill_matrice_t(T_machine T)
 						{
 							
 							numero_indice_matrice=k;
-							printf("numero 1er boucle %d\n",numero_indice_matrice);
+							//printf("numero 1er boucle %d\n",numero_indice_matrice);
 						}
 					}
 					
@@ -488,12 +471,12 @@ T_machine fill_matrice_t(T_machine T)
 							numero_indice_matrice=numero_indice_matrice+resultat;
 
 							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
-							printf("mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
+							//printf("mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 						}
 				}
 
-				printf("i %d\n",i);
-				printf("---------------------\n");
+				//printf("i %d\n",i);
+				//printf("---------------------\n");
 		}	
 		
 	}
@@ -519,7 +502,7 @@ T_machine fill_matrice_t(T_machine T)
 			if(T.table_transition[numero_transition].etat_actuel==i)
 			{
 				
-				printf("T.table_transition.symbole_actuel %c  \n",T.table_transition[2].symbole_actuel[0]);
+				//printf("T.table_transition.symbole_actuel %c  \n",T.table_transition[2].symbole_actuel[0]);
 				
 					
 					for(k=0;k<NC;k++)
@@ -527,9 +510,9 @@ T_machine fill_matrice_t(T_machine T)
 					
 						if(T.alphabet[k]==T.table_transition[numero_transition].symbole_actuel[0])
 						{
-							printf("%c",T.alphabet[k]);
+							//printf("%c",T.alphabet[k]);
 							numero_indice_matrice=k;
-							printf("numero 1er boucle %d\n",numero_indice_matrice);
+							//printf("numero 1er boucle %d\n",numero_indice_matrice);
 						
 						}
 					}
@@ -548,10 +531,10 @@ T_machine fill_matrice_t(T_machine T)
 
 							resultat=resultat*k;
 							
-							printf("%c",T.alphabet[k]);
+							//printf("%c",T.alphabet[k]);
 
 							numero_indice_matrice=numero_indice_matrice+resultat;
-							printf("\n nnumero 2er boucle %d\n",numero_indice_matrice);
+							//printf("\n nnumero 2er boucle %d\n",numero_indice_matrice);
 						}
 					}	
 					puissance =0;
@@ -566,20 +549,20 @@ T_machine fill_matrice_t(T_machine T)
 							while(puissance!=NR-1) {puissance++; resultat=resultat*NC;}
 							//resultat=resultat*resultat;
 							resultat=resultat*k;
-							printf("%c \n",T.alphabet[k]);
+							//printf("%c \n",T.alphabet[k]);
 							
 							numero_indice_matrice=numero_indice_matrice+resultat;
-							printf("\n numero 3er boucle %d\n",numero_indice_matrice);
+							//printf("\n numero 3er boucle %d\n",numero_indice_matrice);
 							
-							printf(" mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
+							//printf(" mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
 							
 							T.matrice_transition[i][numero_indice_matrice]=numero_transition;
 						}
 					}
 
-				printf("i %d\n",i);
-				printf(" mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
-				printf("---------------------\n");
+				//printf("i %d\n",i);
+				//printf(" mt_f %d\n",T.matrice_transition[i][numero_indice_matrice]);
+				//printf("---------------------\n");
 		}	
 	}
 }		
@@ -587,40 +570,39 @@ T_machine fill_matrice_t(T_machine T)
 	return T;
 }
 
-
-
-
-	
-void liberation_de_la_memoire(T_machine T,Info_machine I)
+void liberation_de_la_memoire(T_machine T)
 {
+int y=0;
+int i=0;
+for(i=0;i<NT;i++)
+{
+free(T.table_transition[i].direction);
+free(T.table_transition[i].symbole_actuel);
+free(T.table_transition[i].symbole_suivant);
 
-//~ free(I.transition);
-//~ free(I.transition->symbole_suivant);				
-//free(I.transition->symbole_actuel);				
-//free(I.transition->direction);
-//~ free(T.table_transition);
-//~ free(T.table_transition->direction);
-//free(T.table_transition->symbole_actuel);
-//free(T.table_transition->symbole_suivant);
-//free(T.table_transition);
-//free(T.alpabet);
+free(T.table_transition);
+}
+for(y=0;y<NE;y++) free(T.matrice_transition[y]);
+free(T.matrice_transition);
+free(T.alphabet);
 }
 
 T_machine charger_fichier(T_machine T,char* path)
 {
-	if(verifier_transition_non_vide(path)==1)
-	{
+	
+
+	verifier_transition_non_vide(path);
+
 	init_NC_(path);
 	init_NE(path);
 	init_NR(path);
 	init_NT(path);	
-	}
+	init_EF(path);
 	verifier_format_etat_alphabet(path);
-	verifier_format_transition_ruban(path);
+
 	T=fill_alphabet(T,path);
 	T=fill_transition(T,path);
 	T=fill_matrice_t(T);
-	
 return T;	
 }
 	

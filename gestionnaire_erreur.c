@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <stdio.h> //pour printf, à retirer
+#include <stdio.h> //pour //printf, à retirer
 #include <string.h>
 #include <gtk/gtk.h>
 #include "gestionnaire_erreur.h"
@@ -12,6 +12,11 @@ int g_choice = -1;
 //On cast avec "GTK_WINDOW(nom_du_widget)"
 //On utilise des gchar* au lieu de char pour gtk.
 
+void close_error(GtkButton *button, GtkWidget *mainwindow)
+{
+	gtk_widget_destroy(mainwindow);
+}
+
 void equalone(GtkButton *button, gpointer value)
 {
 	int* result = value;
@@ -23,7 +28,7 @@ void equalzero(GtkButton *button, gpointer value)
 	g_choice = 0;
 }
 
-int err_affiche_message_ok(char* message)
+void err_affiche_message_ok(char* message)
 {
 	//Creation du "box" contenant tous nos widgets
 	GtkWidget* box = gtk_vbox_new(TRUE, 0);
@@ -42,7 +47,7 @@ int err_affiche_message_ok(char* message)
     gtk_window_set_default_size(GTK_WINDOW(mainWindow), LONGUEUR, LARGEUR);
     
     //Effaceur de la fenêtre
-    gtk_signal_connect (GTK_OBJECT(mainWindow), "delete_event", GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+    gtk_signal_connect (GTK_OBJECT(mainWindow), "delete_event", GTK_SIGNAL_FUNC(gtk_widget_destroy), mainWindow);
     
     //titre de la fenêtre
 	gtk_window_set_title(GTK_WINDOW(mainWindow), "Erreur");
@@ -63,7 +68,7 @@ int err_affiche_message_ok(char* message)
 	buttonOk = gtk_button_new_with_label(g_locale_to_utf8("ok", -1, NULL, NULL, NULL));
 	
 	//Ajout d'une connexion au bouton "ok"
-	gtk_signal_connect(GTK_OBJECT(buttonOk), "released", GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+	gtk_signal_connect(GTK_OBJECT(buttonOk), "released", G_CALLBACK(close_error), mainWindow);
 	
 	//Ajout du label dans le "box"
 	gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 1);
@@ -76,8 +81,6 @@ int err_affiche_message_ok(char* message)
 	
 	//Boucle évènementielle
 	gtk_main();
-	
-    return EXIT_SUCCESS;
 }
 
 int err_affiche_message_YN(char* message)
@@ -188,12 +191,19 @@ int err_existant(char* code)
 void err_caractere_indefini(char* code)
 {
 	char* etat = malloc(sizeof(char) * 4);
+	
 	char* caractere = malloc(sizeof(char)*1);
 	char* message = malloc(sizeof(char) * (strlen("<span foreground=\""COULEUR_ERREUR"\"><b>Erreur</b></span> : le caractère \"") + 1 + strlen("\" existe dans une transition à l'état ") + 4 + strlen(" mais est introuvable dans l'alphabet")));
 	
 	etat[0] = code[1];
-	etat[1] = code[2];
-	etat[2] = code[3];
+	if(code[2] != ']')
+	{
+		etat[1] = code[2];
+	}
+	if(code[2] != ']' && code[3] != ']')
+	{
+		etat[2] = code[3];
+	}
 	caractere[0] = code[strlen(code)-2];
 	
 	strcpy(message, "<span foreground=\""COULEUR_ERREUR"\"><b>Erreur</b></span> : le caractère \"");
@@ -216,10 +226,10 @@ void err_caractere_indefini(char* code)
 	//~ gtk_init(&argc, &argv);
 	//~ //test de fenêtre classique, le format à respecter pour l'argument d'une des fonctions "err_" est indiqué dans les specs, respectez le à la lettre !
 	//~ err_format("3");
-	//~ printf("%d\n", g_choice); 
+	//~ //printf("%d\n", g_choice); 
 	//~ //err_existant("fichier.mdt");
 	//~ err_format("89"); 
-	//~ printf("%d\n", g_choice); 
+	//~ //printf("%d\n", g_choice); 
     //~ return EXIT_SUCCESS;
 //~ }
 

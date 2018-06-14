@@ -33,7 +33,7 @@ void conversion_donne_fichier(char* path, Info_machine I)
 	//~ int ite=0;
 	//~ for(ite=0;I.transition[0].symbole_actuel[ite]!='\0';ite++) {}
 	
-	//~ printf("ite %d\n",ite);
+	//~ //printf("ite %d\n",ite);
 	//~ I.transition=malloc(sizeof(Transition)*NT+1);
 	//~ ce que ta fait I.transition[NT+1]=NULL;
 	//~ while(I.transition[y].!=NULL) nombre_transition++;
@@ -42,26 +42,26 @@ void conversion_donne_fichier(char* path, Info_machine I)
 	 int etat[NT+1];
 	 for(i=0;i<NT+1;i++) etat[i]=-1;
 	 etat[0]=I.transition[0].etat_actuel;
-	 printf("NT %d\n",NT);
+	 //printf("NT %d\n",NT);
 	 //remplir le tableau etat d'Ã©tat le trier et l'Ã©crire dans le fichier
 	 	 for(ite=0;ite<NT;ite++)
 	 	 {
-			 printf("etat_suivant %d\n",I.transition[ite].etat_suivant);
-			  printf("ite %d\n",ite);
+			 //printf("etat_suivant %d\n",I.transition[ite].etat_suivant);
+			  //printf("ite %d\n",ite);
 
 			  for(i=0;i<NT+1;i++)
 			 {
 			 if(I.transition[ite].etat_suivant==etat[i])
 			 {
-				 //printf("ok");
+				 ////printf("ok");
 				 i=NT+1;
 			 }
 			 if(etat[i]==-1)
 			 {
 				 etat[i]=I.transition[ite].etat_suivant;
-				 printf("i %d",i);
-				 				  printf(" etat %d\n",etat[i]);
-				  printf("etat_suivant_dans boucle %d\n",I.transition[ite].etat_suivant);
+				 //printf("i %d",i);
+				 				  //printf(" etat %d\n",etat[i]);
+				  //printf("etat_suivant_dans boucle %d\n",I.transition[ite].etat_suivant);
 				 i=NT+1;
 				 
 
@@ -71,16 +71,16 @@ void conversion_donne_fichier(char* path, Info_machine I)
 			 }
 			
 		}
-		//for(i=0;i<NT+1;i++)  printf(" etat %d\n",etat[i]);
+		//for(i=0;i<NT+1;i++)  //printf(" etat %d\n",etat[i]);
 	tri_a_bulle_c(etat,NT+1);
-	//for(i=0;i<NT+1;i++)  printf(" etat apres le tri %d\n",etat[i]);
+	//for(i=0;i<NT+1;i++)  //printf(" etat apres le tri %d\n",etat[i]);
 	
 	FILE* fichier = NULL;
     fichier = fopen(path, "w");
     char c='\0';
     int j=0;
     while(etat[j]==-1) ++j;
-    //printf(" j %d",j);
+    ////printf(" j %d",j);
     
     //ecriture de l'ensemble des Ã©tats
     fputs("[",fichier);
@@ -132,8 +132,8 @@ void conversion_donne_fichier(char* path, Info_machine I)
     j++;
 	}
 	 	fclose(fichier);
-	 	for(i=0;i<NT+1;i++) 
-	 	printf(" %d etat a la fin de la boucle \n", etat[i]);
+	 	//for(i=0;i<NT+1;i++) 
+	 	//printf(" %d etat a la fin de la boucle \n", etat[i]);
 
 }
 

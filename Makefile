@@ -1,7 +1,7 @@
 #
 # Flags d'erreurs:
 #
-ERROR_CFLAGS = -Wall -W -pedantic
+ERROR_CFLAGS = -Wall -Wextra -W -pedantic
  
  
 #
@@ -27,37 +27,37 @@ LDFLAGS = $(ERROR_FLAGS) $(TFLAGS) $(GLIB_LDFLAGS) $(PANGO_LDFLAGS) $(GTK_LDFLAG
 
 all: gestionnaire
 
-gestionnaire:  verifier_format.o charger_fichier.o ecriture_log.o save_fichier.o gestionnaire_erreur.o simulateur.o interface.o main.o 
-	gcc $(LDFLAGS) -o  gestionnaire  verifier_format.o charger_fichier.o ecriture_log.o save_fichier.o  gestionnaire_erreur.o simulateur.o interface.o main.o 
+gestionnaire: charger_fichier.o verifier_format.o ecriture_log.o save_fichier.o gestionnaire_erreur.o simulateur.o interface.o main.o 
+	gcc $(LDFLAGS) -o  simulateur_exe  charger_fichier.o verifier_format.o ecriture_log.o save_fichier.o  gestionnaire_erreur.o simulateur.o interface.o main.o 
 
 
-main.o: main.c  verifier_format.h charger_fichier.h ecriture_log.h save_fichier.h gestionnaire_erreur.h simulateur.h interface.h
-	gcc $(LDFLAGS) -o main.o -c main.c -lm  
+main.o: main.c charger_fichier.h verifier_format.h ecriture_log.h save_fichier.h gestionnaire_erreur.h simulateur.h interface.h
+	gcc $(LDFLAGS) -o main.o -c main.c -lm -g
+
+charger_fichier.o: charger_fichier.c
+	gcc -o charger_fichier.o -c charger_fichier.c -lm  -g
 
 verifier_format.o: verifier_format.c
-	gcc $(LDFLAGS)  -o verifier_format.o -c verifier_format.c -lm  
+	gcc $(LDFLAGS)  -o verifier_format.o -c verifier_format.c -lm  -g
 
-charger_fichier.o: charger_fichier.c charger_fichier.h
-	gcc -o charger_fichier.o -c charger_fichier.c -lm 
-	
 ecriture_log.o: ecriture_log.c
 	gcc -o ecriture_log.o -c ecriture_log.c -lm -g
 
 save_fichier.o: save_fichier.c
-	gcc -o save_fichier.o -c save_fichier.c -lm  
+	gcc -o save_fichier.o -c save_fichier.c -lm  -g
 	
 gestionnaire_erreur.o: gestionnaire_erreur.c
-		gcc $(LDFLAGS)   -o gestionnaire_erreur.o -c gestionnaire_erreur.c
+		gcc $(LDFLAGS)   -o gestionnaire_erreur.o -c gestionnaire_erreur.c -g
 
 simulateur.o: simulateur.c
-		gcc $(LDFLAGS)   -o simulateur.o -c simulateur.c
+		gcc $(LDFLAGS)   -o simulateur.o -c simulateur.c -g
 		
 interface.o:interface.c		
-		gcc $(LDFLAGS)   -o interface.o -c interface.c
+		gcc $(LDFLAGS)   -o interface.o -c interface.c -g
 			
 clean:
 	rm -rf *.o
 
 mrproper: clean
-	rm -rf gestionnaire
+	rm -rf simulateur_exe
 				

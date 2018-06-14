@@ -1,11 +1,7 @@
-#include <stdlib.h>
-#include <gtk/gtk.h>
-#include <stdio.h>
-#include <string.h>
 #include "interface.h"
-#define NBR_TRANSITION 1024												//Nombre de transition max autorisées
-//remember : mettre les mots dans string[NR]
+//machine courante = machine actuellement visible dans l'écran (2)
 
+//retire les caractères en double de la chaine passée en paramètre
 char* retirer_duplicatas(char *str)
 {
     char marqueur[256] = {0}; 
@@ -25,14 +21,15 @@ char* retirer_duplicatas(char *str)
     return str;
 }
 
+//Sauvegarde la machine courante via l'explorateur de fichier
 void in_save(GtkWidget *button, gpointer data)
 {
 	
 	GtkWidget* explorateur;
 	int action;
-	explorateur = gtk_file_chooser_dialog_new (	"Séléctionnez le fichier .mdt",
+	explorateur = gtk_file_chooser_dialog_new (	"Enregistrer sous",
 												NULL,
-												GTK_FILE_CHOOSER_ACTION_OPEN,
+												GTK_FILE_CHOOSER_ACTION_SAVE,
 												GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 												GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
 												NULL);
@@ -40,7 +37,6 @@ void in_save(GtkWidget *button, gpointer data)
 	if( action == GTK_RESPONSE_ACCEPT)
 	{
 		char* chemin = "tmp";
-		printf("%s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER (explorateur)));
 		chemin = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER (explorateur));
 		gtk_widget_destroy(explorateur);
 		NT = NBR_TRANSITION;
@@ -53,6 +49,7 @@ void in_save(GtkWidget *button, gpointer data)
 
 }
 
+//actualise l'alphabet et s'assure que le caractère blanc "#" y est présent
 void in_changer_alphabet(GtkWidget *button, gpointer data)
 {
 	int action;
@@ -76,8 +73,7 @@ void in_changer_alphabet(GtkWidget *button, gpointer data)
 	action = gtk_dialog_run(GTK_DIALOG(choix_alphabet));
 	if(action == GTK_RESPONSE_OK)
 	{
-		G_IM.alphabet = retirer_duplicatas(strdup(gtk_entry_get_text(GTK_ENTRY(saisie))));
-		strcat(G_IM.alphabet, "#");
+		G_IM.alphabet = retirer_duplicatas(strcat(strdup(gtk_entry_get_text(GTK_ENTRY(saisie))), "#"));
 		gtk_widget_destroy(choix_alphabet);
 	}
 	else if(action == GTK_RESPONSE_CANCEL)
@@ -86,10 +82,40 @@ void in_changer_alphabet(GtkWidget *button, gpointer data)
 	}
 }
 
+//Lance l'exécution de la machine courante
 void in_executer(GtkWidget *button, gpointer data)
 {
-	;
+	T_machine T;
+	int verification = 0;
+	mot_a_lire = malloc(sizeof(char*) * 3);
+	
+	char* entree = strdup(gtk_entry_get_text(GTK_ENTRY(G_widgets.mot_ruban1)));
+	mot_a_lire[0] = malloc(sizeof(char)*strlen(entree));
+	strcpy(mot_a_lire[0], entree);
+	
+	entree = strdup(gtk_entry_get_text(GTK_ENTRY(G_widgets.mot_ruban2)));
+	mot_a_lire[1] = malloc(sizeof(char)*strlen(entree));
+	strcpy(mot_a_lire[1], entree);
+	
+	entree = strdup(gtk_entry_get_text(GTK_ENTRY(G_widgets.mot_ruban3)));
+	mot_a_lire[2] = malloc(sizeof(char)*strlen(entree));
+	strcpy(mot_a_lire[2], entree);
+	
+	//printf("ruban 0 : %s\n", mot_a_lire[0]);
+	//printf("ruban 1 : %s\n", mot_a_lire[1]);
+	//printf("ruban 2 : %s\n", mot_a_lire[2]);
+	
+	
+	conversion_donne_fichier("tmp", G_IM);
+	T = charger_fichier(T, "tmp");
+	verification = mdt_Initialisation(&T);
+	while(verification == 1)
+	{
+		verification = mdt_Transition(&T);
+	}
 }
+
+//Actualise les champs de la machine lorsqu'on change de transition
 //écrit dans "G_transition_actuelle"
 void in_change_transition(GtkWidget *combo, gpointer data)
 {
@@ -101,69 +127,78 @@ void in_change_transition(GtkWidget *combo, gpointer data)
 	{
 		//Remplissage des symboles lus
 		char_tmp[0] = G_IM.transition[G_transition_actuelle].symbole_actuel[0];
-		gtk_entry_set_text(GTK_ENTRY(widgets.lu1), char_tmp);
+		gtk_entry_set_text(GTK_ENTRY(G_widgets.lu1), char_tmp);
 		char_tmp[0] = G_IM.transition[G_transition_actuelle].symbole_actuel[1];
-		gtk_entry_set_text(GTK_ENTRY(widgets.lu2), char_tmp);
+		gtk_entry_set_text(GTK_ENTRY(G_widgets.lu2), char_tmp);
 		char_tmp[0] = G_IM.transition[G_transition_actuelle].symbole_actuel[2];
-		gtk_entry_set_text(GTK_ENTRY(widgets.lu3), char_tmp);
+		gtk_entry_set_text(GTK_ENTRY(G_widgets.lu3), char_tmp);
 		
 		//Remplissage des symboles à écrire
 		char_tmp[0] = G_IM.transition[G_transition_actuelle].symbole_suivant[0];
-		gtk_entry_set_text(GTK_ENTRY(widgets.ecrit1), char_tmp);
+		gtk_entry_set_text(GTK_ENTRY(G_widgets.ecrit1), char_tmp);
 		char_tmp[0] = G_IM.transition[G_transition_actuelle].symbole_suivant[1];
-		gtk_entry_set_text(GTK_ENTRY(widgets.ecrit2), char_tmp);
+		gtk_entry_set_text(GTK_ENTRY(G_widgets.ecrit2), char_tmp);
 		char_tmp[0] = G_IM.transition[G_transition_actuelle].symbole_suivant[2];
-		gtk_entry_set_text(GTK_ENTRY(widgets.ecrit3), char_tmp);
+		gtk_entry_set_text(GTK_ENTRY(G_widgets.ecrit3), char_tmp);
 		
 		//Remplissage des directions à prendre
 		char_tmp[0] = G_IM.transition[G_transition_actuelle].direction[0];
-		gtk_entry_set_text(GTK_ENTRY(widgets.direction1), char_tmp);
+		gtk_entry_set_text(GTK_ENTRY(G_widgets.direction1), char_tmp);
 		char_tmp[0] = G_IM.transition[G_transition_actuelle].direction[1];
-		gtk_entry_set_text(GTK_ENTRY(widgets.direction2), char_tmp);
+		gtk_entry_set_text(GTK_ENTRY(G_widgets.direction2), char_tmp);
 		char_tmp[0] = G_IM.transition[G_transition_actuelle].direction[2];
-		gtk_entry_set_text(GTK_ENTRY(widgets.direction3), char_tmp);
+		gtk_entry_set_text(GTK_ENTRY(G_widgets.direction3), char_tmp);
 		
-		//Actualisation des états correspondant à la transition
+		//Actualisation état de la transition
 		int_tmp = G_IM.transition[G_transition_actuelle].etat_actuel;
-		gtk_combo_box_set_active(GTK_COMBO_BOX(widgets.liste_etat_actuel), int_tmp);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(G_widgets.liste_etat_actuel), int_tmp);
+
+		//Actualisation état auquel la transition mène
 		int_tmp = G_IM.transition[G_transition_actuelle].etat_suivant;
-		gtk_combo_box_set_active(GTK_COMBO_BOX(widgets.liste_etat_suivant), int_tmp);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(G_widgets.liste_etat_suivant), int_tmp);
+
 	}
 }
 
+//Actualise les infos de info_machine lorsque l'utilisateur valide la transition
 void in_update(GtkWidget *entry, gpointer data)
 {
 	const gchar* char_tmp;
+	int int_tmp;
 	
 	//Remplissage des symboles à lire dans le tableau de transition. On les sauvegarde dans IM
-	char_tmp = gtk_entry_get_text(GTK_ENTRY(widgets.lu1));
+	char_tmp = gtk_entry_get_text(GTK_ENTRY(G_widgets.lu1));
 	G_IM.transition[G_transition_actuelle].symbole_actuel[0] = char_tmp[0];
-	char_tmp = gtk_entry_get_text(GTK_ENTRY(widgets.lu2));
+	char_tmp = gtk_entry_get_text(GTK_ENTRY(G_widgets.lu2));
 	G_IM.transition[G_transition_actuelle].symbole_actuel[1] = char_tmp[0];
-	char_tmp = gtk_entry_get_text(GTK_ENTRY(widgets.lu3));
+	char_tmp = gtk_entry_get_text(GTK_ENTRY(G_widgets.lu3));
 	G_IM.transition[G_transition_actuelle].symbole_actuel[2] = char_tmp[0];
 	
 	//Remplissage des symboles à écrire dans le tableau de transition. On les sauvegarde dans IM
-	char_tmp = gtk_entry_get_text(GTK_ENTRY(widgets.ecrit1));
+	char_tmp = gtk_entry_get_text(GTK_ENTRY(G_widgets.ecrit1));
 	G_IM.transition[G_transition_actuelle].symbole_suivant[0] = char_tmp[0];
-	char_tmp = gtk_entry_get_text(GTK_ENTRY(widgets.ecrit2));
+	char_tmp = gtk_entry_get_text(GTK_ENTRY(G_widgets.ecrit2));
 	G_IM.transition[G_transition_actuelle].symbole_suivant[1] = char_tmp[0];
-	char_tmp = gtk_entry_get_text(GTK_ENTRY(widgets.ecrit3));
+	char_tmp = gtk_entry_get_text(GTK_ENTRY(G_widgets.ecrit3));
 	G_IM.transition[G_transition_actuelle].symbole_suivant[2] = char_tmp[0];
 	
 	//Remplissage des directions de tête de curseur à effectuer. On les sauvegarde dans IM
-	char_tmp = gtk_entry_get_text(GTK_ENTRY(widgets.direction1));
+	char_tmp = gtk_entry_get_text(GTK_ENTRY(G_widgets.direction1));
 	G_IM.transition[G_transition_actuelle].direction[0] = char_tmp[0];
-	char_tmp = gtk_entry_get_text(GTK_ENTRY(widgets.direction2));
+	char_tmp = gtk_entry_get_text(GTK_ENTRY(G_widgets.direction2));
 	G_IM.transition[G_transition_actuelle].direction[1] = char_tmp[0];
-	char_tmp = gtk_entry_get_text(GTK_ENTRY(widgets.direction3));
+	char_tmp = gtk_entry_get_text(GTK_ENTRY(G_widgets.direction3));
 	G_IM.transition[G_transition_actuelle].direction[2] = char_tmp[0];
 	
 	//Remplissage des états indiqués par l'utilisateur. On sauvegarde dans IM.
-	G_IM.transition[G_transition_actuelle].etat_actuel = atoi(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widgets.liste_etat_actuel)));
-	G_IM.transition[G_transition_actuelle].etat_suivant = atoi(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(widgets.liste_etat_suivant)));
+	int_tmp = atoi(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(G_widgets.liste_etat_actuel)));
+	G_IM.transition[G_transition_actuelle].etat_actuel = int_tmp;
+
+	int_tmp = atoi(gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(G_widgets.liste_etat_suivant)));
+	G_IM.transition[G_transition_actuelle].etat_suivant = int_tmp;
 }
 
+//Initialise un "info_machine" vide et le renvoi
 Info_machine in_init_info_machine_vide()
 {
 	Info_machine IM;
@@ -172,8 +207,9 @@ Info_machine in_init_info_machine_vide()
 	
 	IM.alphabet = malloc(sizeof(char) * 128);								//Alphabet possède 128 caractères
 	IM.alphabet[0] = '0';													//Caractère 0 est de base dans l'alphabet
-	IM.alphabet[1] = '1';													//Caractère 1 est de base dans l'alphabet
-	for(j = 2;j<127;j++)
+	IM.alphabet[1] = '1';	
+	IM.alphabet[2] = '#';												//Caractère 1 est de base dans l'alphabet
+	for(j = 3;j<127;j++)
 	{
 		IM.alphabet[j] = '\0';
 	}
@@ -183,7 +219,6 @@ Info_machine in_init_info_machine_vide()
 	while(i > 0)
 	{
 		IM.transition[i-1].symbole_actuel = calloc(3, sizeof(char));		//1 symbole par ruban. symbole_actuel[0] = premier ruban... etc
-		//IM.transition[0].symbole_actuel = 0;
 		IM.transition[i-1].symbole_suivant = calloc(3, sizeof(char));		//1 symbole à remplacer par ruban
 		IM.transition[i-1].direction = calloc(3, sizeof(char));			//une direction par ruban
 		IM.transition[i-1].etat_actuel = 0;
@@ -193,14 +228,76 @@ Info_machine in_init_info_machine_vide()
 	return IM;
 }
 
-void in_ecran_nouvelle_machine()
+//Initialiser un "info_machine" vide et le remplit avec les informations contenues dans le fichier "chemin" passé en paramètre.
+Info_machine in_init_et_charger_info_machine(char* chemin)
+{
+	Info_machine IM;
+	T_machine T = charger_fichier(T, chemin);
+	int i = 0;
+	int j = 0;
+	
+	IM.alphabet = malloc(sizeof(char) * 128);								//Alphabet possède 128 caractères
+	IM.transition = malloc(sizeof(Transition) * NBR_TRANSITION);			//Init 1024 transitions
+	IM.nb_etats = 128;														//Deux états obligatoires : initial et final. On sait que l'état 0 est le premier, et que l'état "nb_etats" est l'unique accepteur.
+
+	//Récupération alphabet
+	while(T.alphabet[i] != '#' && i < 127)									//# dernier caractère, max 126 caractères, 127e = '#', 128e = '\0'
+	{
+		IM.alphabet[i] = T.alphabet[i];
+		i++;
+	}
+	IM.alphabet[i] = '#';
+	i++;
+	while(i <= 128)
+	{
+		IM.alphabet[i] = '\0';
+		i++;
+	}
+	
+	//Récupération transition
+	i = 0;
+	while(i < NT)
+	{
+		//printf("i = %d\n", i);
+		//On récupère les symboles à lire
+		IM.transition[i].symbole_actuel = calloc(3, sizeof(char));
+		for(j = 0; j<NR; j++)
+		{
+			IM.transition[i].symbole_actuel[j] = T.table_transition[i].symbole_actuel[j];
+		}
+		
+		//On récupère les symboles à écrire
+		IM.transition[i].symbole_suivant = calloc(3, sizeof(char));
+		for(j = 0; j<NR; j++)
+		{
+			IM.transition[i].symbole_suivant[j] = T.table_transition[i].symbole_suivant[j];
+		}
+		
+		//On récupère les direction à prendre
+		IM.transition[i].direction = calloc(3, sizeof(char));
+		for(j = 0; j<NR; j++)
+		{
+			IM.transition[i].direction[j] = T.table_transition[i].direction[j];
+		}
+		//On récupère l'état de la transition et l'état ou il mène
+		IM.transition[i].etat_actuel = T.table_transition[i].etat_actuel;
+		IM.transition[i].etat_suivant = T.table_transition[i].etat_suivant;
+		i++;
+	}
+	
+	return IM;
+}
+
+//affiche l'écran (2) et attend une action utilisateur
+void in_ecran_nouvelle_machine(GtkWidget* mainwindow)
 {
 	int once = 1;
 	char str_tmp[12];
 	int i = 0;
 	G_transition_actuelle = 0;
 	
-	//On initialise une seule fois la machine
+	//On initialise une seule fois la machine, je veux être sur que GTK ne repasse pas dans in_init_info_machine_vide() à cause d'une boucle perdue.
+	//Cette sécurité est peut être inutile.
 	if(once)
 	{
 		G_IM = in_init_info_machine_vide();		
@@ -208,14 +305,15 @@ void in_ecran_nouvelle_machine()
 	}
 	
 	//Widgets globaux
-	GtkWidget* space = gtk_label_new("\n"); //ajoute un espace entre deux widgets
+	GtkWidget* space = gtk_label_new("\n"); //ajoute un espace entre deux G_widgets
 	GtkWidget* shift = gtk_label_new(" "); //Ajoute un espace vide pour aligner
 
 	//déclaration des widget et indication de leur hiérarchie
 	GtkWidget* mainbox = gtk_vbox_new(TRUE, 0);
-		GtkWidget* sauvegarder_executer = gtk_hbox_new(TRUE, 0);
-			GtkWidget* bouton_sauvegarde = gtk_button_new_with_label(g_locale_to_utf8("Sauvegarder", -1, NULL, NULL, NULL));	
-			GtkWidget* bouton_executer = gtk_button_new_with_label(g_locale_to_utf8("Exécuter", -1, NULL, NULL, NULL));	
+		GtkWidget* box_precedent = gtk_hbox_new(TRUE, 0);
+			GtkWidget* bouton_precedent = gtk_button_new_with_label(g_locale_to_utf8("Precedent", -1, NULL, NULL, NULL));
+			GtkWidget* shift2 = gtk_label_new(" ");
+			GtkWidget* shift3 = gtk_label_new(" ");
 		GtkWidget* liste_et_transition = gtk_hbox_new(TRUE, 0);
 			GtkWidget* listes_et_labels = gtk_hbox_new(TRUE,0);
 				GtkWidget* listes_label = gtk_vbox_new(TRUE, 0);	
@@ -257,18 +355,24 @@ void in_ecran_nouvelle_machine()
 					GtkWidget* liste_etat_suivant = gtk_combo_box_text_new_with_entry();
 				GtkWidget* valider = gtk_hbox_new(TRUE, 0);
 					GtkWidget* bouton_valider = gtk_button_new_with_label(g_locale_to_utf8("Valider la transition", -1, NULL, NULL, NULL));
+		GtkWidget* sauvegarder_executer = gtk_hbox_new(TRUE, 0);
+			GtkWidget* bouton_sauvegarde = gtk_button_new_with_label(g_locale_to_utf8("Sauvegarder", -1, NULL, NULL, NULL));
+			GtkWidget* bouton_executer = gtk_button_new_with_label(g_locale_to_utf8("Exécuter", -1, NULL, NULL, NULL));	
 	//Remplissage de la structure permettant d'actualiser le tableau de transition
-	widgets.lu1 = lu1;
-	widgets.lu2 = lu2;
-	widgets.lu3 = lu3;
-	widgets.ecrit1 = ecrit1;
-	widgets.ecrit2 = ecrit2;
-	widgets.ecrit3 = ecrit3;
-	widgets.direction1 = direction1;
-	widgets.direction2 = direction2;
-	widgets.direction3 = direction3;
-	widgets.liste_etat_actuel = liste_etat_actuel;
-	widgets.liste_etat_suivant = liste_etat_suivant;
+	G_widgets.lu1 = lu1;
+	G_widgets.lu2 = lu2;
+	G_widgets.lu3 = lu3;
+	G_widgets.ecrit1 = ecrit1;
+	G_widgets.ecrit2 = ecrit2;
+	G_widgets.ecrit3 = ecrit3;
+	G_widgets.direction1 = direction1;
+	G_widgets.direction2 = direction2;
+	G_widgets.direction3 = direction3;
+	G_widgets.liste_etat_actuel = liste_etat_actuel;
+	G_widgets.liste_etat_suivant = liste_etat_suivant;
+	G_widgets.mot_ruban1 = entree1;
+	G_widgets.mot_ruban2 = entree2;
+	G_widgets.mot_ruban3 = entree3;
 	
 	//Remplissage des listes d'états et de la liste des transitions
 	while(i < G_IM.nb_etats)
@@ -285,9 +389,9 @@ void in_ecran_nouvelle_machine()
 	}
 	
 	//Initialisation de la fenêtre
-	GtkWidget* mainwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_default_size(GTK_WINDOW(mainwindow), 800,600);
-	gtk_signal_connect (GTK_OBJECT(mainwindow), "delete_event", GTK_SIGNAL_FUNC(gtk_exit), NULL);
+	//mainwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	//gtk_window_set_default_size(GTK_WINDOW(mainwindow), 800,600);
+	//gtk_signal_connect (GTK_OBJECT(mainwindow), "delete_event", GTK_SIGNAL_FUNC(gtk_exit), NULL);
 	gtk_window_set_title(GTK_WINDOW(mainwindow), "Ecriture de la machine de Turing");
 	
 	//Ajout de la ligne ruban 1, ruban 2 ... 
@@ -360,7 +464,13 @@ void in_ecran_nouvelle_machine()
 	gtk_box_pack_start(GTK_BOX(sauvegarder_executer), bouton_sauvegarde, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(sauvegarder_executer), bouton_executer, TRUE, FALSE, 0);
 	
+	//Ajout du bouton précédent dans sa boite
+	gtk_box_pack_start(GTK_BOX(box_precedent), bouton_precedent, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_precedent), shift2, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_precedent), shift3, TRUE, FALSE, 0);
+	
 	//Ajout de la boite sauvegarder/execution et de la boite gérant les transitions, dans la boite globale
+	gtk_box_pack_start(GTK_BOX(mainbox), box_precedent, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mainbox), liste_et_transition, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mainbox), sauvegarder_executer, TRUE, FALSE, 0);
 	
@@ -378,6 +488,222 @@ void in_ecran_nouvelle_machine()
 	
 	//Envoi la machine au gestionnaire entrées/sorties lors d'un clic sur le bouton sauvegarder
 	gtk_signal_connect(GTK_OBJECT(bouton_sauvegarde), "clicked", G_CALLBACK(in_save), NULL);
+	
+	//Retourne à l'écran précédent
+	gtk_signal_connect(GTK_OBJECT(bouton_precedent), "clicked", G_CALLBACK(re_afficher_accueil), mainwindow);
+	
+	//Ouvre une boite de dialogue permettant de changer l'alphabet
+	gtk_signal_connect(GTK_OBJECT(bouton_alphabet), "clicked", G_CALLBACK(in_changer_alphabet), NULL);
+	
+	//Affiche tout
+	gtk_widget_show_all(mainwindow);
+	//gtk_exit(0);
+	
+}
+
+//charge un fichier .mdt préexistant, affiche l'écran (2) et attend une action utilisateur
+void in_ecran_charger_machine(char* chemin, GtkWidget* mainwindow)
+{
+	int once = 1;
+	char str_tmp[12];
+	int i = 0;
+	G_transition_actuelle = 0;
+	
+	//On initialise une seule fois la machine, je veux être sur que GTK ne repasse pas dans in_init_info_machine_vide() à cause d'une boucle perdue.
+	//Cette sécurité est peut être inutile.
+	if(once)
+	{
+		G_IM = in_init_et_charger_info_machine(chemin);		
+		once = 0;
+	}
+	
+	//Widgets globaux
+	GtkWidget* space = gtk_label_new("\n"); //ajoute un espace entre deux G_widgets
+	GtkWidget* shift = gtk_label_new(" "); //Ajoute un espace vide pour aligner
+
+	//déclaration des widget et indication de leur hiérarchie
+	GtkWidget* mainbox = gtk_vbox_new(TRUE, 0);
+		GtkWidget* box_precedent = gtk_hbox_new(TRUE, 0);
+			GtkWidget* bouton_precedent = gtk_button_new_with_label(g_locale_to_utf8("Precedent", -1, NULL, NULL, NULL));
+			GtkWidget* shift2 = gtk_label_new(" ");
+			GtkWidget* shift3 = gtk_label_new(" ");
+		GtkWidget* sauvegarder_executer = gtk_hbox_new(TRUE, 0);
+			GtkWidget* bouton_sauvegarde = gtk_button_new_with_label(g_locale_to_utf8("Sauvegarder", -1, NULL, NULL, NULL));	
+			GtkWidget* bouton_executer = gtk_button_new_with_label(g_locale_to_utf8("Exécuter", -1, NULL, NULL, NULL));	
+		GtkWidget* liste_et_transition = gtk_hbox_new(TRUE, 0);
+			GtkWidget* listes_et_labels = gtk_hbox_new(TRUE,0);
+				GtkWidget* listes_label = gtk_vbox_new(TRUE, 0);	
+					GtkWidget* ecrit_transition = gtk_label_new("Transition actuelle");
+					GtkWidget* label_entree1 = gtk_label_new("Entrée ruban 1");
+					GtkWidget* label_entree2 = gtk_label_new("Entrée ruban 2");
+					GtkWidget* label_entree3 = gtk_label_new("Entrée ruban 3");
+				GtkWidget* listes = gtk_vbox_new(TRUE, 0);	
+					GtkWidget* liste_transition = gtk_combo_box_text_new_with_entry();			
+					GtkWidget* bouton_alphabet = gtk_button_new_with_label(g_locale_to_utf8("Modifier l'alphabet", -1, NULL, NULL, NULL));
+					GtkWidget* entree1 = gtk_entry_new();
+					GtkWidget* entree2 = gtk_entry_new();
+					GtkWidget* entree3 = gtk_entry_new();
+			GtkWidget* transition = gtk_vbox_new(FALSE, 0);
+				GtkWidget* label_ruban = gtk_hbox_new(TRUE, 0);
+					GtkWidget* label_ruban1 = gtk_label_new("Ruban 1");
+					GtkWidget* label_ruban2 = gtk_label_new("Ruban 2");
+					GtkWidget* label_ruban3 = gtk_label_new("Ruban 3");
+				GtkWidget* caractere_lu = gtk_hbox_new(TRUE, 0);
+					GtkWidget* lu_label = gtk_label_new("Caractère lu :");
+					GtkWidget* lu1 = gtk_entry_new_with_max_length(1);
+					GtkWidget* lu2 = gtk_entry_new_with_max_length(1);
+					GtkWidget* lu3 = gtk_entry_new_with_max_length(1);
+				GtkWidget* caractere_ecrit = gtk_hbox_new(TRUE, 0);
+					GtkWidget* ecrit_label = gtk_label_new("Caractère à écrire :");
+					GtkWidget* ecrit1 = gtk_entry_new_with_max_length(1);
+					GtkWidget* ecrit2 = gtk_entry_new_with_max_length(1);
+					GtkWidget* ecrit3 = gtk_entry_new_with_max_length(1);
+				GtkWidget* direction = gtk_hbox_new(TRUE, 0);
+					GtkWidget* direction_label = gtk_label_new("Déplacement :");
+					GtkWidget* direction1 = gtk_entry_new_with_max_length(1);
+					GtkWidget* direction2 = gtk_entry_new_with_max_length(1);
+					GtkWidget* direction3 = gtk_entry_new_with_max_length(1);
+				GtkWidget* etat_actuel = gtk_hbox_new(TRUE, 0);
+					GtkWidget* etat_actuel_label = gtk_label_new("Etat actuel");
+					GtkWidget* liste_etat_actuel = gtk_combo_box_text_new_with_entry();
+				GtkWidget* etat_suivant = gtk_hbox_new(TRUE, 0);
+					GtkWidget* etat_suivant_label = gtk_label_new("Etat suivant");
+					GtkWidget* liste_etat_suivant = gtk_combo_box_text_new_with_entry();
+				GtkWidget* valider = gtk_hbox_new(TRUE, 0);
+					GtkWidget* bouton_valider = gtk_button_new_with_label(g_locale_to_utf8("Valider la transition", -1, NULL, NULL, NULL));
+	//Remplissage de la structure permettant d'actualiser le tableau de transition
+	G_widgets.lu1 = lu1;
+	G_widgets.lu2 = lu2;
+	G_widgets.lu3 = lu3;
+	G_widgets.ecrit1 = ecrit1;
+	G_widgets.ecrit2 = ecrit2;
+	G_widgets.ecrit3 = ecrit3;
+	G_widgets.direction1 = direction1;
+	G_widgets.direction2 = direction2;
+	G_widgets.direction3 = direction3;
+	G_widgets.liste_etat_actuel = liste_etat_actuel;
+	G_widgets.liste_etat_suivant = liste_etat_suivant;
+	G_widgets.mot_ruban1 = entree1;
+	G_widgets.mot_ruban2 = entree2;
+	G_widgets.mot_ruban3 = entree3;
+	
+	//Remplissage des listes d'états et de la liste des transitions
+	while(i < G_IM.nb_etats)
+	{
+		sprintf(str_tmp, "%d", i);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT (liste_etat_suivant), str_tmp);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT (liste_etat_actuel), str_tmp);
+		i++;
+	}
+	for(i=0; i < NBR_TRANSITION; i++)
+	{
+		sprintf(str_tmp, "%d", i);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT (liste_transition), str_tmp);
+	}
+	
+	//Initialisation de la fenêtre
+	//mainwindow = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	//gtk_window_set_default_size(GTK_WINDOW(mainwindow), 800,600);
+	//gtk_signal_connect (GTK_OBJECT(mainwindow), "delete_event", GTK_SIGNAL_FUNC(gtk_exit), NULL);
+	gtk_window_set_title(GTK_WINDOW(mainwindow), "Ecriture de la machine de Turing");
+	
+	//Ajout de la ligne ruban 1, ruban 2 ... 
+	gtk_box_pack_start(GTK_BOX(label_ruban), shift, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(label_ruban), label_ruban1, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(label_ruban), label_ruban2, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(label_ruban), label_ruban3, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(transition), label_ruban, TRUE, FALSE, 0);
+	
+	//Ajout de la ligne "caractere lu" dans le tableau de transition
+	gtk_box_pack_start(GTK_BOX(caractere_lu), lu_label, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(caractere_lu), lu1, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(caractere_lu), lu2, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(caractere_lu), lu3, TRUE, FALSE, 0);
+	
+	//Ajout de la ligne "caractere à écrire" dans le tableau de transition
+	gtk_box_pack_start(GTK_BOX(caractere_ecrit), ecrit_label, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(caractere_ecrit), ecrit1, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(caractere_ecrit), ecrit2, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(caractere_ecrit), ecrit3, TRUE, FALSE, 0);
+	
+	//Ajout de la ligne "direction" dans le tableau de transition
+	gtk_box_pack_start(GTK_BOX(direction), direction_label, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(direction), direction1, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(direction), direction2, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(direction), direction3, TRUE, FALSE, 0);
+	
+	//ajout de la ligne "etat actuel" dans le tableau de transition
+	gtk_box_pack_start(GTK_BOX(etat_actuel), etat_actuel_label, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(etat_actuel), liste_etat_actuel, TRUE, FALSE, 0);
+	
+	//ajout de la ligne "etat suivant" dans le tableau de transition
+	gtk_box_pack_start(GTK_BOX(etat_suivant), etat_suivant_label, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(etat_suivant), liste_etat_suivant, TRUE, FALSE, 0);
+	
+	//Ajout du bouton "valider" dans la boite
+	gtk_box_pack_start(GTK_BOX(valider), bouton_valider, TRUE, FALSE, 0);
+	
+	//ajout des 5 boites remplies ci dessus dans une "boite" verticale afin de les ordonner de haut en bas
+	gtk_box_pack_start(GTK_BOX(transition), caractere_lu, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(transition), caractere_ecrit, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(transition), direction, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(transition), etat_actuel, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(transition), etat_suivant, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(transition), valider, TRUE, FALSE, 0);
+	
+	//Ajout des labels dans une boite verticale afin de les ordonner de haut en bas
+	gtk_box_pack_start(GTK_BOX(listes_label), ecrit_transition, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(listes_label), space, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(listes_label), label_entree1, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(listes_label), label_entree2, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(listes_label), label_entree3, TRUE, FALSE, 0);
+	
+	//Ajout des deux listes de choix dans une boite verticale afin de les ordonner de haut en bas
+	gtk_box_pack_start(GTK_BOX(listes), liste_transition, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(listes), bouton_alphabet, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(listes), entree1, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(listes), entree2, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(listes), entree3, TRUE, FALSE, 0);
+	
+	//Ajout des listes et de leurs labels dans une boite horizontale
+	gtk_box_pack_start(GTK_BOX(listes_et_labels), listes_label, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(listes_et_labels), listes, TRUE, FALSE, 0);
+	
+	//Ajout de transition et listes dans une boite horizontale afin de les ordonner
+	gtk_box_pack_start(GTK_BOX(liste_et_transition), listes_et_labels, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(liste_et_transition), transition, TRUE, FALSE, 0);
+	
+	//Ajout des boutons sauvegarder et executer dans une boite horizontale pour les ordonner
+	gtk_box_pack_start(GTK_BOX(sauvegarder_executer), bouton_sauvegarde, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(sauvegarder_executer), bouton_executer, TRUE, FALSE, 0);
+	
+	//Ajout du bouton précédent dans sa boite
+	gtk_box_pack_start(GTK_BOX(box_precedent), bouton_precedent, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_precedent), shift2, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_precedent), shift3, TRUE, FALSE, 0);
+	
+	//Ajout de la boite sauvegarder/execution et de la boite gérant les transitions, dans la boite globale
+	gtk_box_pack_start(GTK_BOX(mainbox), box_precedent, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mainbox), liste_et_transition, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mainbox), sauvegarder_executer, TRUE, FALSE, 0);
+	
+	//Ajout de la boite globale dans la fenêtre principale
+	gtk_container_add(GTK_CONTAINER(mainwindow), mainbox);
+	
+	//Actualise le tableau de transition lors d'un changement de transition
+	gtk_signal_connect(GTK_OBJECT(liste_transition), "changed", G_CALLBACK(in_change_transition), NULL);
+	
+	//Enregistre toute modification d'un champ du tableau de transition ou de l'état, dans info machine
+	gtk_signal_connect(GTK_OBJECT(bouton_valider), "clicked", G_CALLBACK(in_update), NULL);
+	
+	//Lance l'exécution de la machine
+	gtk_signal_connect(GTK_OBJECT(bouton_executer), "clicked", G_CALLBACK(in_executer), NULL);
+	
+	//Envoi la machine au gestionnaire entrées/sorties lors d'un clic sur le bouton sauvegarder
+	gtk_signal_connect(GTK_OBJECT(bouton_sauvegarde), "clicked", G_CALLBACK(in_save), NULL);
+	
+	//Retourne à l'écran précédent
+	gtk_signal_connect(GTK_OBJECT(bouton_precedent), "clicked", G_CALLBACK(re_afficher_accueil), mainwindow);
 	
 	//Ouvre une boite de dialogue permettant de changer l'alphabet
 	gtk_signal_connect(GTK_OBJECT(bouton_alphabet), "clicked", G_CALLBACK(in_changer_alphabet), NULL);

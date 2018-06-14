@@ -1,3 +1,4 @@
+
 #ifndef H_GL_CHARGER
 #define H_GL_CHARGER
 #include <stdio.h>
@@ -21,8 +22,7 @@ T_machine fill_matrice_t(T_machine T);
 
 T_machine charger_fichier(T_machine T,char* path);
 
-void liberation_de_la_memoire(T_machine T,Info_machine I);
+void liberation_de_la_memoire(T_machine T);
 
 
 #endif
-

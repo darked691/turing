@@ -2,10 +2,10 @@
 #include "gestionnaire_erreur.h"
 
 //verifie si le format pour le tableau état et alphabet dans le fichier est respécté
-int verifier_format_etat_alphabet()
+int verifier_format_etat_alphabet(char* path)
 {
 	FILE* fichier=NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
 	int i=0;
 	char c = '\0'; 
 	int parenthese=0;
@@ -52,7 +52,7 @@ int verifier_format_etat_alphabet()
 			
 			
 			
-			printf("^%c",c);   
+ 
 			parenthese=0;
 			
 			nombre=0;
@@ -69,8 +69,6 @@ int verifier_format_etat_alphabet()
             nombre++;
             
            nombre=nombre%2; 
-            printf("%d",nombre);
-			printf("%c",c);          
 
             if(nombre==1 && c==']') {err_format("1 le caractére n'est pas un symbole de l'alphabet");  exit(0); }
             
@@ -98,9 +96,9 @@ int verifier_format_etat_alphabet()
 	
 }	
 //verifie sir le format transition est respécté
- int verifier_format_transition_ruban(){
+ int verifier_format_transition_ruban(char* path){
 	FILE* fichier = NULL;
-    fichier = fopen("fichier", "r");
+    fichier = fopen(path, "r");
 	int i=0;
 	char c = '\0'; 
 	int parenthese=0;
@@ -109,10 +107,10 @@ int verifier_format_etat_alphabet()
 	int nombre_bars_vertical=0;
 	int position_caractere=2;
 	char message[8];
-	printf("%d \n",NR);
+
 	if(NR>3)
 	{
-	 printf("erreur format Nombre de Ruban elevée\n");
+
 	 exit(0);
 	} 
     if (fichier != NULL)
@@ -141,7 +139,7 @@ int verifier_format_etat_alphabet()
 			if(c==EOF) break;
 			if (c=='\n')nombre_ligne++;
 
-			if(c!=' ' || c!='\n'){position_caractere++; printf("%c ----->",c); printf("%d \n",position_caractere);}
+			if(c!=' ' || c!='\n'){position_caractere++; }
 			//%14 car une ligne comporte 14 caractere
 			
 			if((position_caractere%14==2 || position_caractere%14==4 || position_caractere%14==6 || position_caractere%14 == 8 || position_caractere%14==10 || position_caractere%14==12) && c!='|'){ sprintf(message,"%d",nombre_ligne); err_format(strcat(message,"  le  caractere '|' ou '/' n'est pas défini")); exit(0);}
@@ -150,7 +148,6 @@ int verifier_format_etat_alphabet()
 
 			if(((position_caractere%14==5) || (position_caractere%14==7)) && (c=='/' || c=='|')) { sprintf(message,"%d",nombre_ligne); err_format(strcat(message," un numero d'état a ete déplacé ou supprimer")); exit(0);}					
 							
-			//if((position_caractere%14==1 || position_caractere%14==13) && c!='/'){ sprintf(message,"%d",nombre_ligne);  err_format(nombre_ligne + " le  caractere '/' n'est pas défini"); exit(0);}
 			
 			if((position_caractere%14==1 || position_caractere%14==13) && c=='/') nombre_bars_vertical++;
 					  
@@ -172,7 +169,7 @@ int verifier_format_etat_alphabet()
 			c= fgetc(fichier);
 			if(c==EOF) break;
 			if (c=='\n')nombre_ligne++;
-			if(c!=' ' || c!='\n'){position_caractere++; printf("%c ----->",c); printf("%d \n",position_caractere);}
+			if(c!=' ' || c!='\n'){position_caractere++;}
 			
 			
 			
@@ -182,7 +179,7 @@ int verifier_format_etat_alphabet()
 			
 			if((position_caractere%17==2 || position_caractere%17==5 || position_caractere%17==7 || position_caractere%17 == 9 || position_caractere%17==12 || position_caractere%17==15) && c!='|'){ sprintf(message,"%d",nombre_ligne); err_format(strcat(message,"  le  caractere '|' ou '/' n'est pas défini")); exit(0);}
 			
-			//if((position_caractere%17==1 || position_caractere%17==16) && c!='/'){ sprintf(message,"%d",nombre_ligne); err_format(strcat(message," le  caractere '/' n'est pas défini")); exit(0);}
+			
 			
 			if((position_caractere%17==1 || position_caractere%17==16) && c=='/') nombre_bars_vertical++;
 					  
@@ -207,12 +204,12 @@ int verifier_format_etat_alphabet()
 			
 			c= fgetc(fichier);
 			if(c==EOF) break;
-			printf("nombre_ligne %d \n",nombre_ligne);
+
 	
 			
 			 if (c=='\n')nombre_ligne++;
 			
-			if(c!=' ' || c!='\n'){position_caractere++; printf("%c ----->",c); printf("%d \n",position_caractere);}
+			if(c!=' ' || c!='\n'){position_caractere++; }
 			
 			//%20 car une ligne comporte 20 caractere
 			
@@ -247,12 +244,12 @@ fclose(fichier);
 return 1;
 }  
 //verifie si les transitions n'ont pas été effacés
-int verifier_transition_non_vide()
+int verifier_transition_non_vide(char* path)
 {
 		
 	FILE* fic = NULL;
 	
-    fic = fopen("fichier", "r");
+    fic = fopen(path, "r");
     
     char symbole_actuel[3];
     
@@ -284,16 +281,16 @@ int verifier_transition_non_vide()
         
 	c= fgetc(fic);
 	
-	if(c!='/' ) {printf("erreur format symbole vide il manque '\'");return 0;}
+	if(c!='/' ) {exit(0);}
 	
 	c= fgetc(fic);
 	
-	if(c!='|' ) {printf("erreur format symbole vide il manque '|'");return 0;}
+	if(c!='|' ) {exit(0);}
 	
 	c= fgetc(fic);
 	
-	if(c=='\n' || c==' '){printf("erreur format symbole vide");return 0;}
+	if(c=='\n' || c==' '){exit(0);}
 	
-	 return 1;
+
 }
 }

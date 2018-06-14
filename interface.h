@@ -5,10 +5,10 @@
 	#include <stdio.h>
 	#include <string.h>
 	#include "definition.h"
-	#define NBR_TRANSITION 1024												//Nombre de transition max autorisées
+	#define NBR_TRANSITION 1024										//Nombre de transition max autorisées
 	//remember : mettre les mots dans string[NR]
 
-	//Structure globale contenant les champs à changer lors d'un changement de transition
+	//Structure globale contenant les champs à actualiser lors d'un changement de transition
 	typedef struct
 	{
 		GtkWidget* lu1;
@@ -22,11 +22,14 @@
 		GtkWidget* direction3;
 		GtkWidget* liste_etat_actuel;
 		GtkWidget* liste_etat_suivant;
+		GtkWidget* mot_ruban1;
+		GtkWidget* mot_ruban2;
+		GtkWidget* mot_ruban3;
 		
 	}Transition_widgets;
 
 	Info_machine G_IM;
-	Transition_widgets widgets;
+	Transition_widgets G_widgets;
 	int G_transition_actuelle;
 
 	//retire les caractères en double d'une chaine ( afin d'éviter les doublons dans l'alphabet )
@@ -43,6 +46,16 @@
 	Info_machine in_init_info_machine_vide();
 	
 	//Fenêtre regroupant toutes les opérations possible après création d'une nouvelle machine
-	void in_ecran_nouvelle_machine();
+	void in_ecran_nouvelle_machine(GtkWidget* mainwindow);
+	
+	//fenêtre regroupant toutes les opérations possible et initialise une machine à partir du fichier "chemin"
+	void in_ecran_charger_machine(char* chemin, GtkWidget* mainwindow);
+	
+	T_machine charger_fichier(T_machine T,char* path);
+	int mdt_Initialisation(T_machine* T);
+	int mdt_Transition(T_machine* T);
+	void conversion_donne_fichier(char* path, Info_machine I);
+	void re_afficher_accueil(GtkWidget* pButon, gpointer data);
+	
 #endif
 

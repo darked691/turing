@@ -12,7 +12,7 @@ int NC;
 int NT;
 int NR;
 int NE;
-int EF; //Etat final
+int EF;
 char** mot_a_lire;
 int position_texte[2];
 FILE** G_fichier;
